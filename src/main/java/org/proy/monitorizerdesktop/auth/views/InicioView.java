@@ -1,22 +1,23 @@
 package org.proy.monitorizerdesktop.auth.views;
 
+import org.proy.monitorizerdesktop.auth.controller.InicioController;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
 
-@Component
 public class InicioView extends JFrame {
 
     private JTextField emailField;
     private JPasswordField passwordField;
     private JComboBox<String> rolComboBox;
     private JButton iniciarButton;
+    private final InicioController controller;
 
-    @PostConstruct
-    public void init() {
+    public InicioView(InicioController controller) {
+        this.controller = controller;
         SwingUtilities.invokeLater(this::buildUI);
+
     }
 
     private void buildUI() {
@@ -38,9 +39,15 @@ public class InicioView extends JFrame {
 
         JLabel rolLabel = new JLabel("Rol:");
         rolComboBox = new JComboBox<>(new String[]{"Cliente", "Servidor"});
-        rolComboBox.setSelectedIndex(-1); // Sin selección inicial
+        rolComboBox.setSelectedIndex(-1);
 
         iniciarButton = new JButton("Iniciar sesión");
+        iniciarButton.addActionListener(e -> {
+            String email = getEmail();
+            String password = getPassword();
+            String rol = getRol();
+            desplegarVistaRol(email,  password, rol);
+        });
 
         gbc.gridx = 0; gbc.gridy = 0;
         panel.add(emailLabel, gbc);
@@ -64,7 +71,19 @@ public class InicioView extends JFrame {
         setVisible(true);
     }
 
-    // Getters para el controlador
+    private void desplegarVistaRol(String email, String password, String rol) {
+        JFrame vista=null;
+        Boolean validado= controller.validarUsuario(email, password);
+        if (validado) {
+            if ("Cliente".equalsIgnoreCase(rol)) {
+                vista = new ClienteView();
+            } else if ("Servidor".equalsIgnoreCase(rol)) {
+                vista = new ServidorView();
+            }
+        }
+
+
+    }
 
     public String getEmail() {
         return emailField.getText();
