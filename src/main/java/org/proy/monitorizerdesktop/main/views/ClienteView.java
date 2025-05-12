@@ -1,12 +1,31 @@
-package org.proy.monitorizerdesktop.auth.views;
+package org.proy.monitorizerdesktop.main.views;
+
+import org.proy.monitorizerdesktop.entities.Usuario;
+import org.proy.monitorizerdesktop.main.classes.Cliente;
+import org.proy.monitorizerdesktop.main.controllers.ClienteController;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Optional;
 
+@Component
 public class ClienteView extends JFrame {
 
-    public ClienteView() {
+    private ClienteController clienteController;
+
+    @Autowired
+    public ClienteView(ClienteController clienteController) {
+        this.clienteController = clienteController;
         buildUI();
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.clienteController.setUsuario(usuario);
+
     }
 
     private void buildUI() {
@@ -19,7 +38,6 @@ public class ClienteView extends JFrame {
         mensaje.setFont(new Font("Arial", Font.PLAIN, 16));
         add(mensaje);
 
-        setVisible(true);
     }
 }
 

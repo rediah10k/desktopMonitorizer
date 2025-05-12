@@ -1,17 +1,31 @@
-package org.proy.monitorizerdesktop.auth.views;
+package org.proy.monitorizerdesktop.main.views;
+
+import org.proy.monitorizerdesktop.entities.Usuario;
+import org.proy.monitorizerdesktop.main.classes.Servidor;
+import org.proy.monitorizerdesktop.main.controllers.ServidorController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
+@Component
 public class ServidorView extends JFrame {
-
     private JTable tablaConexiones;
     private JLabel labelEstado;
     private JButton btnNuevaConexion;
+    private ServidorController servidorController;
 
-    public ServidorView() {
+    @Autowired
+    public ServidorView(ServidorController servidorController) {
+        this.servidorController = servidorController;
         buildUI();
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.servidorController.setUsuario(usuario);
+
     }
 
     private void buildUI() {
@@ -21,8 +35,6 @@ public class ServidorView extends JFrame {
         setLocationRelativeTo(null);
 
         JPanel panelPrincipal = new JPanel(new BorderLayout());
-
-
         JPanel panelSuperior = new JPanel(new FlowLayout(FlowLayout.LEFT));
         btnNuevaConexion = new JButton("Nueva conexión");
         labelEstado = new JLabel("Conexiones 0/10");
@@ -38,7 +50,6 @@ public class ServidorView extends JFrame {
         panelPrincipal.add(scrollPane, BorderLayout.CENTER);
 
         add(panelPrincipal);
-        setVisible(true);
     }
 
     public void actualizarConexiones(int actuales, int maximas) {

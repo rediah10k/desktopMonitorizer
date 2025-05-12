@@ -1,25 +1,27 @@
-package org.proy.monitorizerdesktop.auth.controller;
+package org.proy.monitorizerdesktop.auth.controllers;
 
-import org.proy.monitorizerdesktop.auth.repos.UsuarioRepository;
 import org.proy.monitorizerdesktop.auth.services.AuthService;
 import org.proy.monitorizerdesktop.entities.Usuario;
 import org.springframework.stereotype.Component;
+import org.proy.monitorizerdesktop.main.services.UserService;
+import java.util.Optional;
 
 @Component
 public class InicioController {
     private final AuthService authService;
+    private final UserService userService;
 
-    public InicioController(AuthService authService) {
+    public InicioController(AuthService authService, UserService userService) {
         this.authService = authService;
+        this.userService= userService;
     }
 
-    public Boolean validarUsuario(String email, String password) {
-        Boolean validado=authService.login(email, password);
-       return validado;
+    public Optional<Usuario> autenticarYObtenerUsuario(String email, String password) {
+        if (authService.login(email, password)) {
+            return userService.loadUser(email);
+        }
+        return Optional.empty();
     }
 
-    public Usuario getUsuario() {
-        
-        return null;
-    }
+
 }
