@@ -1,21 +1,32 @@
 package org.proy.monitorizerdesktop.auth.views;
 
-import org.proy.monitorizerdesktop.auth.controller.InicioController;
+import org.proy.monitorizerdesktop.auth.controllers.InicioController;
+import org.proy.monitorizerdesktop.entities.Usuario;
+import org.proy.monitorizerdesktop.main.views.ClienteView;
+import org.proy.monitorizerdesktop.main.views.ServidorView;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Optional;
 
+@Component
 public class InicioView extends JFrame {
 
+    private final VistaFactory vistaFactory;
     private JTextField emailField;
     private JPasswordField passwordField;
     private JComboBox<String> rolComboBox;
     private JButton iniciarButton;
+    private JLabel mensajeErrorLabel;
     private final InicioController controller;
 
-    public InicioView(InicioController controller) {
+
+
+
+    public InicioView(InicioController controller, VistaFactory vistaFactory) {
         this.controller = controller;
+        this.vistaFactory = vistaFactory;
         SwingUtilities.invokeLater(this::buildUI);
 
     }
@@ -24,7 +35,7 @@ public class InicioView extends JFrame {
         setTitle("Inicio de Sesión");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 250);
-        setLocationRelativeTo(null); // Centrar ventana
+        setLocationRelativeTo(null);
 
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -41,12 +52,22 @@ public class InicioView extends JFrame {
         rolComboBox = new JComboBox<>(new String[]{"Cliente", "Servidor"});
         rolComboBox.setSelectedIndex(-1);
 
+        mensajeErrorLabel = new JLabel("");
+        mensajeErrorLabel.setForeground(Color.RED);
+        mensajeErrorLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+
+
         iniciarButton = new JButton("Iniciar sesión");
         iniciarButton.addActionListener(e -> {
             String email = getEmail();
             String password = getPassword();
             String rol = getRol();
-            desplegarVistaRol(email,  password, rol);
+            if (email.isEmpty() || password.isEmpty() || rol == null) {
+                mensajeErrorLabel.setText("Completa todos los campos.");
+            } else {
+                desplegarVistaRol(email, password, rol);
+            }
         });
 
         gbc.gridx = 0; gbc.gridy = 0;
@@ -64,26 +85,36 @@ public class InicioView extends JFrame {
         gbc.gridx = 1;
         panel.add(rolComboBox, gbc);
 
-        gbc.gridx = 1; gbc.gridy = 3;
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        panel.add(mensajeErrorLabel, gbc);
+
+        gbc.gridx = 1; gbc.gridy = 4;
         panel.add(iniciarButton, gbc);
 
         getContentPane().add(panel);
         setVisible(true);
     }
 
-    private void desplegarVistaRol(String email, String password, String rol) {
-        JFrame vista=null;
-        Boolean validado= controller.validarUsuario(email, password);
-        if (validado) {
-            if ("Cliente".equalsIgnoreCase(rol)) {
-                vista = new ClienteView();
-            } else if ("Servidor".equalsIgnoreCase(rol)) {
-                vista = new ServidorView();
-            }
+    private Usuario iniciarSesion(String email, String password, String rol) {
+
+        Optional<Usuario> usuario = controller.autenticarYObtenerUsuario(email, password);
+        if ( usuario.isPresent()) {
+           return usuario.get();
+        }else{
+            mensajeErrorLabel.setText("Email o contraseña incorrectas");
+            throw new RuntimeException("Email o contraseña incorrectas");
         }
 
-
     }
+
+
+    private void desplegarVistaRol(String email, String password,String rol) {
+        Usuario usuario = iniciarSesion(email, password, rol);
+       JFrame vista = vistaFactory.getVistaPorRol(rol, usuario);
+       vista.setVisible(true);
+    }
+
 
     public String getEmail() {
         return emailField.getText();
@@ -97,7 +128,4 @@ public class InicioView extends JFrame {
         return (String) rolComboBox.getSelectedItem();
     }
 
-    public JButton getIniciarButton() {
-        return iniciarButton;
-    }
 }
