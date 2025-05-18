@@ -5,11 +5,9 @@ import org.proy.monitorizerdesktop.clientserver.dtos.ConexionDTO;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 
-import static com.sun.java.accessibility.util.AWTEventMonitor.addWindowListener;
+
 
 
 public class TransmisionView {
@@ -41,8 +39,13 @@ public class TransmisionView {
         monitor.setVisible(true);
     }
 
+
     public void cerrarTransmision() {
         controller.cerrarTransmision(clienteVisualizado);
+        cerrarVentanaTransmision();
+    }
+
+    public void cerrarVentanaTransmision() {
         monitor.dispose();
     }
 
