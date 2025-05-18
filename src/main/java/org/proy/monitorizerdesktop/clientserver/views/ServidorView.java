@@ -44,6 +44,10 @@ public class ServidorView extends JFrame {
 
     }
 
+    public TransmisionView getTransmisionView() {
+        return transmisionView;
+    }
+
     public void inicializarVentana(){
         this.puertoView.setParentComponents(this,controller);
         puertoView.pedirPuerto();

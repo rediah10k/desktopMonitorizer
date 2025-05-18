@@ -15,13 +15,13 @@ public class GestorServidor {
     private List<Conexion> clientes = new ArrayList<>();
     private Integer maxConexiones=10;
     private ReceptorVideo receptor;
-    private ServidorListener servidorHandler;
+    private ServidorListener servidorListener;
 
 
     @Autowired
     public GestorServidor(ReceptorVideo receptor, ServidorListener servidorHandler) {
         this.receptor = receptor;
-        this.servidorHandler = servidorHandler;
+        this.servidorListener = servidorHandler;
     }
 
     public ReceptorVideo getReceptor() {
@@ -101,6 +101,7 @@ public class GestorServidor {
     public void cerrarTransmision(Conexion conexion) {
         receptor.setTransmitiendo(false);
         conexion.mantenerCanal("FINALIZAR_TRANSMISION");
+        servidorListener.onTransmisionCerrada();
         recibirTransmision.interrupt();
     }
 
@@ -108,7 +109,7 @@ public class GestorServidor {
     public void actualizarTransmision() {
         while(receptor.isTransmitiendo()) {
             BufferedImage frame = receptor.iniciarRecepcion();
-            servidorHandler.onTransmision(frame);
+            servidorListener.onTransmision(frame);
 
         }
 
