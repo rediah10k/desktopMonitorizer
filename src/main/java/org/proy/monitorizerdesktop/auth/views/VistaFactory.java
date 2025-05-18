@@ -1,8 +1,10 @@
 package org.proy.monitorizerdesktop.auth.views;
 
+import org.proy.monitorizerdesktop.clientserver.dtos.UsuarioDTO;
+import org.proy.monitorizerdesktop.clientserver.views.PuertoView;
 import org.proy.monitorizerdesktop.entities.Usuario;
-import org.proy.monitorizerdesktop.main.views.ClienteView;
-import org.proy.monitorizerdesktop.main.views.ServidorView;
+import org.proy.monitorizerdesktop.clientserver.views.ClienteView;
+import org.proy.monitorizerdesktop.clientserver.views.ServidorView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,11 +22,14 @@ public class VistaFactory {
     }
 
     public JFrame getVistaPorRol(String rol, Usuario usuario) {
+        UsuarioDTO usuarioInfo = new UsuarioDTO(usuario.getEmail(),usuario.getId());
         if ("Cliente".equalsIgnoreCase(rol)) {
-            clienteView.setUsuario(usuario);
+            clienteView.setUsuario(usuarioInfo);
+            clienteView.inicializarVentana();
             return clienteView;
         } else if ("Servidor".equalsIgnoreCase(rol)) {
-            servidorView.setUsuario(usuario);
+            servidorView.setUsuario(usuarioInfo);
+            servidorView.inicializarVentana();
             return servidorView;
         }
         throw new IllegalArgumentException("Rol desconocido");

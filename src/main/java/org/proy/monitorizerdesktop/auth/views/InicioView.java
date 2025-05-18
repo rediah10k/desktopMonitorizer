@@ -2,8 +2,6 @@ package org.proy.monitorizerdesktop.auth.views;
 
 import org.proy.monitorizerdesktop.auth.controllers.InicioController;
 import org.proy.monitorizerdesktop.entities.Usuario;
-import org.proy.monitorizerdesktop.main.views.ClienteView;
-import org.proy.monitorizerdesktop.main.views.ServidorView;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
@@ -20,8 +18,6 @@ public class InicioView extends JFrame {
     private JButton iniciarButton;
     private JLabel mensajeErrorLabel;
     private final InicioController controller;
-
-
 
 
     public InicioView(InicioController controller, VistaFactory vistaFactory) {
@@ -55,8 +51,6 @@ public class InicioView extends JFrame {
         mensajeErrorLabel = new JLabel("");
         mensajeErrorLabel.setForeground(Color.RED);
         mensajeErrorLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
-
 
         iniciarButton = new JButton("Iniciar sesión");
         iniciarButton.addActionListener(e -> {
@@ -108,13 +102,12 @@ public class InicioView extends JFrame {
 
     }
 
-
     private void desplegarVistaRol(String email, String password,String rol) {
         Usuario usuario = iniciarSesion(email, password, rol);
        JFrame vista = vistaFactory.getVistaPorRol(rol, usuario);
        vista.setVisible(true);
+       this.dispose();
     }
-
 
     public String getEmail() {
         return emailField.getText();
