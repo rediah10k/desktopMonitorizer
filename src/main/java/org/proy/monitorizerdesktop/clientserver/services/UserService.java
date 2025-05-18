@@ -1,4 +1,4 @@
-package org.proy.monitorizerdesktop.main.services;
+package org.proy.monitorizerdesktop.clientserver.services;
 
 import org.proy.monitorizerdesktop.auth.repos.UsuarioRepository;
 import org.proy.monitorizerdesktop.entities.Usuario;

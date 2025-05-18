@@ -3,7 +3,7 @@ package org.proy.monitorizerdesktop.auth.controllers;
 import org.proy.monitorizerdesktop.auth.services.AuthService;
 import org.proy.monitorizerdesktop.entities.Usuario;
 import org.springframework.stereotype.Component;
-import org.proy.monitorizerdesktop.main.services.UserService;
+import org.proy.monitorizerdesktop.clientserver.services.UserService;
 import java.util.Optional;
 
 @Component
