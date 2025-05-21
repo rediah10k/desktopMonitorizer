@@ -1,31 +1,26 @@
 package org.proy.monitorizerdesktop.entities;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 
+@Data
 @Entity
-@Getter
-@Table(name = "usuario")
+
+@Table(name = "usuarios")
 public class Usuario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long Uid;
 
-    @Column(nullable = false, length = 150)
-    private String nombres;
+    @Column(nullable = false, length = 100)
+    private String nombre;
 
-    @Column(nullable = false, length = 150)
-    private String apellidos;
-
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(nullable = false, unique = true, length = 150)
     private String email;
 
     @Column(nullable = false, length = 100)
     private String password;
-
-    public Usuario() {
-
-    }
-
-
 }
+

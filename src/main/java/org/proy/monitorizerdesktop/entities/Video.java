@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.*;
 
 @Entity
-@Table(name = "video")
+@Table(name = "videos")
 public class Video {
 
     @Id
