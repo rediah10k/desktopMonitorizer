@@ -68,6 +68,7 @@ public class Conexion implements Runnable {
 
         } catch (IOException e) {
             System.out.println("Cliente desconectado: ");
+            cerrarConexion();
         }
     }
 

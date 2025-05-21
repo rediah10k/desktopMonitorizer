@@ -80,10 +80,11 @@ public class GestorCliente implements Runnable {
 
     private void procesarMensaje(String mensaje) {
         System.out.println(mensaje);
-        if(mensaje.equals("INICIAR_TRANSMISION")) {
+        if(mensaje.startsWith("INICIAR_TRANSMISION")) {
             System.out.println("INICIAR TRANSMISION");
+            Integer puerto = extraerPuerto(mensaje);
             clienteListener.onTransmision();
-            capturadorVideo.setProperties(conexion.getInetAddress().getHostAddress(), 4096);
+            capturadorVideo.setProperties(conexion.getInetAddress().getHostAddress(), puerto);
             thread = new Thread(() -> capturadorVideo.capturarVideo());
             thread.start();
 
@@ -93,6 +94,19 @@ public class GestorCliente implements Runnable {
             thread.interrupt();
 
         }
+    }
+
+    private Integer extraerPuerto(String mensaje) {
+        int puerto = 4096;
+        String[] partes = mensaje.split("PUERTO: ");
+        if (partes.length == 2) {
+            try {
+                puerto = Integer.parseInt(partes[1].trim());
+            } catch (NumberFormatException e) {
+                System.err.println("Puerto inválido, usando por defecto: 4096");
+            }
+        }
+        return puerto;
     }
 
 
