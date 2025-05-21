@@ -83,7 +83,7 @@ public class GestorCliente implements Runnable {
         if(mensaje.equals("INICIAR_TRANSMISION")) {
             System.out.println("INICIAR TRANSMISION");
             clienteListener.onTransmision();
-            capturadorVideo.setProperties(conexion.getInetAddress().getHostAddress(), 4098);
+            capturadorVideo.setProperties(conexion.getInetAddress().getHostAddress(), 4096);
             thread = new Thread(() -> capturadorVideo.capturarVideo());
             thread.start();
 

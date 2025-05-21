@@ -18,7 +18,6 @@ public class ServidorListener implements ConexionListener {
         this.servidorView = servidorView;
     }
 
-
     public void onTransmision(BufferedImage image) {
         servidorView.actualizarImagen(image);
     }
@@ -26,7 +25,6 @@ public class ServidorListener implements ConexionListener {
     public void onTransmisionCerrada(){
         servidorView.getTransmisionView().cerrarVentanaTransmision();
     }
-
 
     @Override
     public void onConexionAceptada() {
