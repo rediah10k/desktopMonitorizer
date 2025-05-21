@@ -3,9 +3,9 @@ package org.proy.monitorizerdesktop.clientserver.dtos;
 public class UsuarioDTO {
 
     public String email;
-    public Integer Id;
+    public Long Id;
 
-    public UsuarioDTO(String email, Integer Id) {
+    public UsuarioDTO(String email, Long Id) {
         this.email = email;
         this.Id = Id;
     }
