@@ -89,7 +89,7 @@ public class GestorServidor {
 
 
     public void solicitarTransmision(Conexion conexion) {
-       conexion.mantenerCanal("INICIAR_TRANSMISION");
+       conexion.mantenerCanal("INICIAR_TRANSMISION-PUERTO: "+this.getPuertoVideo());
        receptor.setProperties();
        receptor.setTransmitiendo(true);
        recibirTransmision = new Thread(this::actualizarTransmision);
@@ -99,10 +99,13 @@ public class GestorServidor {
     }
 
     public void cerrarTransmision(Conexion conexion) {
-        receptor.setTransmitiendo(false);
-        conexion.mantenerCanal("FINALIZAR_TRANSMISION");
-        servidorListener.onTransmisionCerrada();
-        recibirTransmision.interrupt();
+        if(recibirTransmision != null) {
+            receptor.setTransmitiendo(false);
+            conexion.mantenerCanal("FINALIZAR_TRANSMISION");
+            servidorListener.onTransmisionCerrada();
+            recibirTransmision.interrupt();
+        }
+
     }
 
 
