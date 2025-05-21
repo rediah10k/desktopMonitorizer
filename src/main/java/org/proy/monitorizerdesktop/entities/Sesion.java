@@ -28,5 +28,7 @@ public class Sesion {
     @JoinColumn(name = "servidor_id")
     private Usuario servidor;
 
-    // Getters y Setters
+    public Sesion() {
+
+    }
 }

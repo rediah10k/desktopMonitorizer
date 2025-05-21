@@ -9,6 +9,11 @@ import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 
 @Component
 public class ClienteView extends JFrame {
@@ -55,26 +60,53 @@ public class ClienteView extends JFrame {
         vistaEspera();
     }
 
-    private String obtenerIP(){
-        String ipLocal = "Desconocida";
-        try {
-            ipLocal = java.net.InetAddress.getLocalHost().getHostAddress();
-        } catch (Exception e) {
-            ipLocal = "No se pudo obtener IP";
+    private void obtenerIP(){
+
+                try {
+                    Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+
+                    while (interfaces.hasMoreElements()) {
+                        NetworkInterface ni = interfaces.nextElement();
+
+
+                        if (!ni.isUp() || ni.isLoopback()) continue;
+
+                        // En Windows, la interfaz Wi-Fi suele contener "wlan" o "wi-fi" en su nombre
+                        String displayName = ni.getDisplayName().toLowerCase();
+                        if (!displayName.contains("wlan") && !displayName.contains("wi-fi")) continue;
+
+                        Enumeration<InetAddress> addresses = ni.getInetAddresses();
+                        while (addresses.hasMoreElements()) {
+                            InetAddress addr = addresses.nextElement();
+
+                            // Solo direcciones IPv4 que no sean loopback
+                            if (addr instanceof Inet4Address && !addr.isLoopbackAddress()) {
+                                System.out.println("Interfaz inalámbrica encontrada: " + ni.getDisplayName());
+                                System.out.println("Dirección IP LAN inalámbrica: " + addr.getHostAddress());
+                                return;
+                            }
+                        }
+                    }
+
+                    System.out.println("No se encontró una interfaz inalámbrica activa.");
+                } catch (SocketException e) {
+                    e.printStackTrace();
+                }
+
         }
-        return ipLocal;
-    }
+
+
 
     public void vistaEspera(){
         construirUI();
         setTitle("Cliente - Esperando Conexiones");
-        String ipLocal = obtenerIP();
-        JLabel ipLabel = new JLabel("IP local: " + ipLocal, SwingConstants.CENTER);
-        ipLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        obtenerIP();
+
         estadoActual.setText("A la espera de conexiones en el puerto " + this.clienteController.getPuerto());
         estadoActual.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        panel.add(ipLabel);
+
         panel.add(estadoActual);
 
         panel.revalidate();

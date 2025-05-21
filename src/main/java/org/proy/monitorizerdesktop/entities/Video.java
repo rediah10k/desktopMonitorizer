@@ -27,4 +27,8 @@ public class Video {
     @JoinColumn(name = "sesion_id")
     private Sesion sesion;
 
+    public Video() {
+
+    }
+
 }
