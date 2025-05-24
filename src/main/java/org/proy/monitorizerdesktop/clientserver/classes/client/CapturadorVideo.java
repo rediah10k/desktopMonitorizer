@@ -1,46 +1,74 @@
 package org.proy.monitorizerdesktop.clientserver.classes.client;
 
+import org.proy.monitorizerdesktop.clientserver.utils.GeneradorVideoLocal;
 import org.springframework.stereotype.Component;
-
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.Socket;
+
+
 
 @Component
 public class CapturadorVideo {
-    Socket socket;
-    DataOutputStream dos;
 
-    public void setProperties(String host, Integer puerto){
+    private Boolean capturando;
+    private Integer fps = 20;
+    private GeneradorVideoLocal videoGenerator;
+    private CapturadorPantalla capturadorPantalla;
+
+    public CapturadorVideo() {
+        capturadorPantalla = new CapturadorPantalla();
+        videoGenerator = new GeneradorVideoLocal();
+    }
+
+    public GeneradorVideoLocal getGeneradorVideoLocal() {
+        return videoGenerator;
+    }
+
+    public void setCapturando(Boolean capturando) {
+        this.capturando = capturando;
+    }
+
+    public void iniciarCaptura() {
         try{
-            socket = new Socket(host, puerto);
-             dos = new DataOutputStream(socket.getOutputStream());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            Dimension dimension = capturadorPantalla.getScreenSize();
+            videoGenerator.setHeight(dimension.height);
+            videoGenerator.setWidth(dimension.width);
+            videoGenerator.setFps(fps);
+            videoGenerator.setRecorderProperties();
+            setCapturando(true);
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
+    public BufferedImage capturarVideo() {
+        try {
+            if(capturando){
 
-    public void capturarVideo() {
-        try{
-        Robot robot = new Robot();
-        Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+                BufferedImage screen = capturadorPantalla.capturar();
+                if(screen == null){
+                    System.err.println("Frame capturado es null. Posiblemente se detuvo la captura.");
+                    capturando = false;
+                    return null;
+                }
+                videoGenerator.anadirFrame(screen);
+                Thread.sleep(1000/fps);
+                return screen;
+            }
 
-        while (true) {
-            BufferedImage screen = robot.createScreenCapture(screenRect);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(screen, "jpg", baos);
-            byte[] imageBytes = baos.toByteArray();
 
-            dos.writeInt(imageBytes.length);
-            dos.write(imageBytes);
-            dos.flush();
-        }}catch (Exception e){
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            System.err.println("Captura finalizada o fallida: " + e.getMessage());
         }
+        return null;
     }
+
+    public void detenerCaptura() {
+        capturando = false;
+        videoGenerator.detenerGeneracion();
+        videoGenerator.guardarVideo("clientmedia");
+    }
+    
+
+
 }

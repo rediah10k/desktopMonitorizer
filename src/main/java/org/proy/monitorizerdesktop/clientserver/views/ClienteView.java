@@ -1,26 +1,22 @@
 package org.proy.monitorizerdesktop.clientserver.views;
 
 import org.proy.monitorizerdesktop.clientserver.dtos.UsuarioDTO;
-import org.proy.monitorizerdesktop.entities.Usuario;
 import org.proy.monitorizerdesktop.clientserver.controllers.ClienteController;
 
+import org.proy.monitorizerdesktop.clientserver.utils.IpPropiedades;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
+
 
 @Component
 public class ClienteView extends JFrame {
 
     JPanel panel;
     private ClienteController clienteController;
-    private JLabel estadoActual;
+    private JTextArea estadoActual;
     private PuertoView puertoView;
 
     @Autowired
@@ -38,7 +34,11 @@ public class ClienteView extends JFrame {
     }
 
     private void setConfigBase(){
-        estadoActual = new JLabel("",SwingConstants.CENTER);
+        estadoActual = new JTextArea();
+        estadoActual.setEditable(false);
+        estadoActual.setOpaque(false);
+        estadoActual.setBorder(null);
+        estadoActual.setFocusable(false);
         panel = new JPanel(new GridLayout(2, 1));
         setSize(590, 200);
         setLocationRelativeTo(null);
@@ -48,66 +48,25 @@ public class ClienteView extends JFrame {
 
     }
 
-
-
     public void setUsuario(UsuarioDTO usuario) {
         this.clienteController.setUsuario(usuario);
     }
-
 
     private void mostrarInterfazEscucha(){
         this.clienteController.iniciarEscucha();
         vistaEspera();
     }
 
-    private void obtenerIP(){
-
-                try {
-                    Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-
-                    while (interfaces.hasMoreElements()) {
-                        NetworkInterface ni = interfaces.nextElement();
-
-
-                        if (!ni.isUp() || ni.isLoopback()) continue;
-
-                        // En Windows, la interfaz Wi-Fi suele contener "wlan" o "wi-fi" en su nombre
-                        String displayName = ni.getDisplayName().toLowerCase();
-                        if (!displayName.contains("wlan") && !displayName.contains("wi-fi")) continue;
-
-                        Enumeration<InetAddress> addresses = ni.getInetAddresses();
-                        while (addresses.hasMoreElements()) {
-                            InetAddress addr = addresses.nextElement();
-
-                            // Solo direcciones IPv4 que no sean loopback
-                            if (addr instanceof Inet4Address && !addr.isLoopbackAddress()) {
-                                System.out.println("Interfaz inalámbrica encontrada: " + ni.getDisplayName());
-                                System.out.println("Dirección IP LAN inalámbrica: " + addr.getHostAddress());
-                                return;
-                            }
-                        }
-                    }
-
-                    System.out.println("No se encontró una interfaz inalámbrica activa.");
-                } catch (SocketException e) {
-                    e.printStackTrace();
-                }
-
-        }
-
 
 
     public void vistaEspera(){
         construirUI();
+        String ip= new IpPropiedades().obtenerIP();
         setTitle("Cliente - Esperando Conexiones");
 
-        obtenerIP();
-
-        estadoActual.setText("A la espera de conexiones en el puerto " + this.clienteController.getPuerto());
+        estadoActual.setText( "Direccion IP: " +ip+"\nA la espera de conexiones en el puerto " + this.clienteController.getPuerto());
         estadoActual.setFont(new Font("Arial", Font.PLAIN, 16));
-
-
-        panel.add(estadoActual);
+        panel.add(estadoActual,BorderLayout.CENTER);
 
         panel.revalidate();
         panel.repaint();
@@ -118,7 +77,7 @@ public class ClienteView extends JFrame {
         setTitle("Cliente - Conectado ");
         estadoActual.setText("Conexion exitosa con el servidor, sin transmitir en este momento");
         estadoActual.setFont(new Font("Arial", Font.PLAIN, 16));
-        panel.add(estadoActual);
+        panel.add(estadoActual,BorderLayout.CENTER);
         panel.revalidate();
         panel.repaint();
     }
@@ -128,7 +87,7 @@ public class ClienteView extends JFrame {
         setTitle("Cliente - Conectado ");
         estadoActual.setText("Conexion exitosa con el servidor, transmitiendo eventos y pantalla de este ordenador");
         estadoActual.setFont(new Font("Arial", Font.PLAIN, 16));
-        panel.add(estadoActual);
+        panel.add(estadoActual,BorderLayout.CENTER);
         panel.revalidate();
         panel.repaint();
     }
@@ -139,7 +98,7 @@ public class ClienteView extends JFrame {
 
         estadoActual.setText("La conexión ha sido cerrada por el servidor, poniendo en espera nuevamente");
         estadoActual.setFont(new Font("Arial", Font.PLAIN, 16));
-        panel.add(estadoActual);
+        panel.add(estadoActual,BorderLayout.CENTER);
 
         JButton botonAceptar = new JButton("Aceptar");
         JPanel botonPanel = new JPanel();

@@ -14,7 +14,6 @@ public class ServidorListener implements ConexionListener {
 
     @Autowired
     public ServidorListener(@Lazy ServidorView servidorView) {
-
         this.servidorView = servidorView;
     }
 
