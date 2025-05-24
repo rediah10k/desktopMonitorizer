@@ -61,7 +61,6 @@ public class Conexion implements Runnable {
             OutputStream out = socket.getOutputStream();
             DataOutputStream dos = new DataOutputStream(out);
             byte[] datos = mensaje.getBytes();
-
             dos.writeInt(datos.length);
             dos.write(datos);
             dos.flush();

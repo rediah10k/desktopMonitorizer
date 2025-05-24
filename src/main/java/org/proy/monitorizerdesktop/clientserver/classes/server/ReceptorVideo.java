@@ -1,5 +1,6 @@
 package org.proy.monitorizerdesktop.clientserver.classes.server;
 
+import org.proy.monitorizerdesktop.clientserver.utils.GeneradorVideoLocal;
 import org.springframework.stereotype.Component;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -12,6 +13,7 @@ import java.net.Socket;
 @Component
 public class ReceptorVideo {
     private ServerSocket serverSocket;
+    private GeneradorVideoLocal generadorVideoLocal;
     private Socket socket;
     private DataInputStream dis;
     private Boolean transmitiendo;
@@ -33,12 +35,19 @@ public class ReceptorVideo {
         return puerto;
     }
 
+    public GeneradorVideoLocal getGeneradorVideoLocal() {
+        return generadorVideoLocal;
+    }
+
    public void setProperties(){
        cerrar();
        try{
            serverSocket = new ServerSocket(puerto);
            socket = serverSocket.accept();
            dis = new DataInputStream(socket.getInputStream());
+           generadorVideoLocal = new GeneradorVideoLocal();
+           generadorVideoLocal.setFps(20);
+
        } catch (IOException e) {
            throw new RuntimeException(e);
        }
@@ -47,22 +56,43 @@ public class ReceptorVideo {
 
     public BufferedImage iniciarRecepcion() {
      try{
-         while (true) {
+            Thread.sleep(1000/3);
              int longitud = dis.readInt();
              byte[] datos = new byte[longitud];
              dis.readFully(datos);
              ByteArrayInputStream bais = new ByteArrayInputStream(datos);
              BufferedImage imagen = ImageIO.read(bais);
+              if(imagen == null){
+                System.err.println("Frame capturado es nulo. Posiblemente se detuvo la transmision.");
+                return null;
+             }
+             if (generadorVideoLocal.getHeight() == 0 || generadorVideoLocal.getWidth() == 0) {
+                 generadorVideoLocal.setHeight(imagen.getHeight());
+                 generadorVideoLocal.setWidth(imagen.getWidth());
+                 generadorVideoLocal.setRecorderProperties();
+             }
+             generadorVideoLocal.anadirFrame(imagen);
              return imagen;
 
-         }
-     } catch (IOException e) {
-         throw new RuntimeException(e);
+     } catch (Exception e) {
+         System.err.println("Captura finalizada o fallida: " + e.getMessage());
      }
+        return null;
+    }
 
+    public void detenerGrabacion() {
+        if (generadorVideoLocal != null) {
+            try {
+                generadorVideoLocal.detenerGeneracion();
+                generadorVideoLocal.guardarVideo("servermedia");
+            } catch (Exception e) {
+                System.err.println("Error al detener grabación: " + e.getMessage());
+            }
+        }
     }
 
     public void cerrar() {
+
         try { if (dis != null) dis.close(); } catch (IOException ignored) {}
         try { if (socket != null && !socket.isClosed()) socket.close(); } catch (IOException ignored) {}
         try { if (serverSocket != null && !serverSocket.isClosed()) serverSocket.close(); } catch (IOException ignored) {}

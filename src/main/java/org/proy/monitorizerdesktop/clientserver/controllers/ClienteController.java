@@ -23,7 +23,6 @@ public class ClienteController implements IController {
 
    }
 
-
    public Integer getPuerto(){
         return cliente.getGestorCliente().getPuerto();
    }

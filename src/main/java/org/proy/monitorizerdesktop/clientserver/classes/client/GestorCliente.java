@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -19,16 +18,14 @@ public class GestorCliente implements Runnable {
     private ServerSocket serverSocket;
     private Socket conexion;
     private ClienteListener clienteListener;
-    private CapturadorVideo capturadorVideo;
-    private Thread thread;
+    private TransmisorVideo transmisorVideo;
 
 
     @Autowired
-    public GestorCliente(ClienteListener clienteListener, CapturadorVideo capturadorVideo) {
+    public GestorCliente(ClienteListener clienteListener, TransmisorVideo transmisorVideo) {
         this.clienteListener = clienteListener;
-        this.capturadorVideo = capturadorVideo;
+        this.transmisorVideo = transmisorVideo;
     }
-
 
     public void iniciarSocketServer() {
         try {
@@ -38,7 +35,6 @@ public class GestorCliente implements Runnable {
             e.printStackTrace();
         }
     }
-
 
     @Override
     public void run() {
@@ -84,14 +80,13 @@ public class GestorCliente implements Runnable {
             System.out.println("INICIAR TRANSMISION");
             Integer puerto = extraerPuerto(mensaje);
             clienteListener.onTransmision();
-            capturadorVideo.setProperties(conexion.getInetAddress().getHostAddress(), puerto);
-            thread = new Thread(() -> capturadorVideo.capturarVideo());
-            thread.start();
+            transmisorVideo.setProperties(conexion.getInetAddress().getHostAddress(), puerto);
+           transmisorVideo.iniciarTransmision();
 
         }if(mensaje.equals("FINALIZAR_TRANSMISION")) {
-            clienteListener.onConexionAceptada();
             System.out.println("FINALIZAR TRANSMISION");
-            thread.interrupt();
+            clienteListener.onConexionAceptada();
+            transmisorVideo.detenerTransmision();
 
         }
     }

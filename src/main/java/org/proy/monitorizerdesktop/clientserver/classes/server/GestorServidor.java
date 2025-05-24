@@ -100,20 +100,23 @@ public class GestorServidor {
 
     public void cerrarTransmision(Conexion conexion) {
         if(recibirTransmision != null) {
+            recibirTransmision.interrupt();
             receptor.setTransmitiendo(false);
+            receptor.detenerGrabacion();
             conexion.mantenerCanal("FINALIZAR_TRANSMISION");
             servidorListener.onTransmisionCerrada();
-            recibirTransmision.interrupt();
-        }
 
+        }
     }
 
 
     public void actualizarTransmision() {
         while(receptor.isTransmitiendo()) {
             BufferedImage frame = receptor.iniciarRecepcion();
+            if(frame == null) {
+                return;
+            }
             servidorListener.onTransmision(frame);
-
         }
 
     }
