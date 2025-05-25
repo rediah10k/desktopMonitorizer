@@ -2,6 +2,7 @@ package org.proy.monitorizerdesktop.clientserver.classes.client;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.proy.monitorizerdesktop.clientserver.utils.EstatusConexion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.io.*;
@@ -53,20 +54,18 @@ public class GestorCliente implements Runnable {
     private void escucharServidor() {
         try {
             DataInputStream dis = new DataInputStream(conexion.getInputStream());
-
             while (true) {
                 int longitud = dis.readInt();
                 byte[] buffer = new byte[longitud];
                 dis.readFully(buffer);
-
                 String mensaje = new String(buffer, StandardCharsets.UTF_8);
-                if (!mensaje.isEmpty()) {
+                if (!mensaje.equals(EstatusConexion.PING.name())) {
                     procesarMensaje(mensaje);
                 }
-
+                Thread.sleep(100);
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("Error al leer del servidor o conexión cerrada: " + e.getMessage());
             cerrarConexion();
             clienteListener.onConexionCerrada();
@@ -75,18 +74,17 @@ public class GestorCliente implements Runnable {
 
 
     private void procesarMensaje(String mensaje) {
-        System.out.println(mensaje);
-        if(mensaje.startsWith("INICIAR_TRANSMISION")) {
+        if(mensaje.startsWith(EstatusConexion.INICIAR_TRANSMISION.name())) {
             System.out.println("INICIAR TRANSMISION");
             Integer puerto = extraerPuerto(mensaje);
-            clienteListener.onTransmision();
             transmisorVideo.setProperties(conexion.getInetAddress().getHostAddress(), puerto);
            transmisorVideo.iniciarTransmision();
+            clienteListener.onTransmision();
 
-        }if(mensaje.equals("FINALIZAR_TRANSMISION")) {
+        }if(mensaje.equals(EstatusConexion.DETENER_TRANSMISION.name())) {
             System.out.println("FINALIZAR TRANSMISION");
-            clienteListener.onConexionAceptada();
             transmisorVideo.detenerTransmision();
+            clienteListener.onConexionAceptada();
 
         }
     }
@@ -105,10 +103,7 @@ public class GestorCliente implements Runnable {
     }
 
 
-
-
     public void cerrarConexion() {
-
         try {
             if (conexion != null && !conexion.isClosed()) {
                 conexion.close();

@@ -18,7 +18,7 @@ public class Servidor {
         this.listConexiones = listConexiones;
     }
 
-    public GestorServidor getGestorConexiones() {
+    public GestorServidor getGestorServidor() {
         return listConexiones;
     }
 
