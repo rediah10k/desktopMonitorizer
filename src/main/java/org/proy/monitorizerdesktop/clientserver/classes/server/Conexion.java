@@ -11,8 +11,6 @@ public class Conexion implements Runnable {
     private Socket socket;
     private volatile Boolean activo;
 
-    private ApplicationEventPublisher eventPublisher;
-
     public void setActivo(Boolean activo) {
         this.activo = activo;
     }

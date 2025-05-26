@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
@@ -35,8 +32,7 @@ public class ServidorView extends JFrame {
         tableModel = new ConexionesActualesTableModel(List.of());
         table = new JTable(tableModel);
         table.setDefaultEditor(Object.class, null);
-
-
+        controller.suscribirseAListener(this);
     }
 
     public void setUsuario(UsuarioDTO usuario) {

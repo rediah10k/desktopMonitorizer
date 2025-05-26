@@ -4,6 +4,8 @@ import org.proy.monitorizerdesktop.clientserver.classes.interfaces.IController;
 import org.proy.monitorizerdesktop.clientserver.dtos.UsuarioDTO;
 import org.proy.monitorizerdesktop.clientserver.classes.client.Cliente;
 import org.proy.monitorizerdesktop.clientserver.services.UserService;
+import org.proy.monitorizerdesktop.clientserver.views.ClienteView;
+import org.proy.monitorizerdesktop.clientserver.views.ServidorView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +24,10 @@ public class ClienteController implements IController {
         this.cliente.setUsuario(usuario);
 
    }
+
+    public void suscribirseAListener(ClienteView view) {
+        cliente.getGestorCliente().setClienteListener(view);
+    }
 
    public Integer getPuerto(){
         return cliente.getGestorCliente().getPuerto();

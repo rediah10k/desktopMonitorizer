@@ -6,6 +6,7 @@ import org.proy.monitorizerdesktop.clientserver.dtos.ConexionDTO;
 import org.proy.monitorizerdesktop.clientserver.dtos.UsuarioDTO;
 import org.proy.monitorizerdesktop.clientserver.classes.server.Servidor;
 import org.proy.monitorizerdesktop.clientserver.services.UserService;
+import org.proy.monitorizerdesktop.clientserver.views.ServidorView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,9 +36,15 @@ public class ServidorController implements IController {
         servidor.getGestorServidor().setPuertoVideo(puerto);
     }
 
+
     @Override
     public UsuarioDTO getUsuario() {
         return servidor.getUsuario();
+    }
+
+
+    public void suscribirseAListener(ServidorView view) {
+        servidor.getGestorServidor().setServidorListener(view);
     }
 
     public void setUsuario(UsuarioDTO usuario) {
@@ -80,7 +87,5 @@ public class ServidorController implements IController {
        Conexion clienteConectado = servidor.getGestorServidor().buscarCliente(clienteListado);
         servidor.getGestorServidor().cerrarTransmision(clienteConectado);
    }
-
-
 
 }
