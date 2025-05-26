@@ -3,6 +3,7 @@ package org.proy.monitorizerdesktop.clientserver.classes.client;
 import lombok.Getter;
 import lombok.Setter;
 import org.proy.monitorizerdesktop.clientserver.utils.EstatusConexion;
+import org.proy.monitorizerdesktop.clientserver.views.ClienteView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.io.*;
@@ -21,11 +22,13 @@ public class GestorCliente implements Runnable {
     private ClienteListener clienteListener;
     private TransmisorVideo transmisorVideo;
 
-
     @Autowired
-    public GestorCliente(ClienteListener clienteListener, TransmisorVideo transmisorVideo) {
-        this.clienteListener = clienteListener;
+    public GestorCliente( TransmisorVideo transmisorVideo) {
         this.transmisorVideo = transmisorVideo;
+    }
+
+    public void setClienteListener(ClienteView clienteView) {
+        this.clienteListener = new ClienteListener(clienteView);
     }
 
     public void iniciarSocketServer() {
@@ -72,7 +75,6 @@ public class GestorCliente implements Runnable {
         }
     }
 
-
     private void procesarMensaje(String mensaje) {
         if(mensaje.startsWith(EstatusConexion.INICIAR_TRANSMISION.name())) {
             System.out.println("INICIAR TRANSMISION");
@@ -101,7 +103,6 @@ public class GestorCliente implements Runnable {
         }
         return puerto;
     }
-
 
     public void cerrarConexion() {
         try {
