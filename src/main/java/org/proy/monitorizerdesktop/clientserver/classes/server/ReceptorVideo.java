@@ -63,7 +63,7 @@ public class ReceptorVideo {
              ByteArrayInputStream bais = new ByteArrayInputStream(datos);
              BufferedImage imagen = ImageIO.read(bais);
               if(imagen == null){
-                System.err.println("Frame capturado es nulo. Posiblemente se detuvo la transmision.");
+                System.out.println("Frame capturado es nulo. Posiblemente se detuvo la transmision.");
                 return null;
              }
              if (generadorVideoLocal.getHeight() == 0 || generadorVideoLocal.getWidth() == 0) {
@@ -75,7 +75,7 @@ public class ReceptorVideo {
              return imagen;
 
      } catch (Exception e) {
-         System.err.println("Captura finalizada o fallida: " + e.getMessage());
+         System.out.println("Captura finalizada o fallida: " + e.getMessage());
      }
         return null;
     }
@@ -86,7 +86,7 @@ public class ReceptorVideo {
                 generadorVideoLocal.detenerGeneracion();
                 generadorVideoLocal.guardarVideo("servermedia");
             } catch (Exception e) {
-                System.err.println("Error al detener grabación: " + e.getMessage());
+                System.out.println("Error al detener grabación: " + e.getMessage());
             }
         }
     }

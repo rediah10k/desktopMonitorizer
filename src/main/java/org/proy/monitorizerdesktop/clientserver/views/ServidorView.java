@@ -68,7 +68,7 @@ public class ServidorView extends JFrame {
         btnMonitor= new JButton("Observar PC");
 
 
-        labelEstado = new JLabel("Conexiones 0/10");
+        labelEstado = new JLabel("");
         panelSuperior.add(btnNuevaConexion);
         panelSuperior.add(btnCerrarConexion);
         panelSuperior.add(btnMonitor);
@@ -95,6 +95,7 @@ public class ServidorView extends JFrame {
         });
 
         add(panelPrincipal);
+        actualizarTabla();
     }
 
     public void solicitarTransmision() {
@@ -194,7 +195,7 @@ public class ServidorView extends JFrame {
     }
 
     public void actualizarTabla() {
-        List<ConexionDTO> clientesActuales=controller.obtenerUsuarios();
+        List<ConexionDTO> clientesActuales=controller.obtenerUsuariosConectados();
         tableModel.setClientes(clientesActuales);
         actualizarCantidad(clientesActuales.size(), controller.getMaximasConexiones());
         tableModel.fireTableDataChanged();

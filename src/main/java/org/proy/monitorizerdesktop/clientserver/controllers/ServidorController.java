@@ -27,12 +27,12 @@ public class ServidorController implements IController {
 
     @Override
     public Integer getPuerto() {
-        return servidor.getGestorConexiones().getPuertoVideo();
+        return servidor.getGestorServidor().getPuertoVideo();
     }
 
     @Override
     public void setPuerto(Integer puerto) {
-        servidor.getGestorConexiones().setPuertoVideo(puerto);
+        servidor.getGestorServidor().setPuertoVideo(puerto);
     }
 
     @Override
@@ -46,18 +46,18 @@ public class ServidorController implements IController {
 
     public void agregarCliente(String ip, Integer puerto) {
         ConexionDTO nuevaConexion = new ConexionDTO(ip, puerto);
-        Conexion cliente = servidor.getGestorConexiones().crearClienteConectado(nuevaConexion);
-        this.servidor.getGestorConexiones().anadirCliente(cliente);
+        servidor.getGestorServidor().agregarCliente(nuevaConexion);
 
     }
 
     public void eliminarCliente(ConexionDTO clienteListado) {
-        Conexion clienteConectado = servidor.getGestorConexiones().obtenerConexionPorIp(clienteListado.getIp());
-        this.servidor.getGestorConexiones().quitarCliente(clienteConectado);
+        Conexion clienteConectado = servidor.getGestorServidor().buscarCliente(clienteListado);
+        servidor.getGestorServidor().desconectarCliente(clienteConectado);
     }
 
-    public List<ConexionDTO> obtenerUsuarios() {
-        List<Conexion> clientes =servidor.getGestorConexiones().getClientes();
+
+    public List<ConexionDTO> obtenerUsuariosConectados() {
+        List<Conexion> clientes =servidor.getGestorServidor().getPoolConexionesOcupadas();
         List<ConexionDTO> clienteDTOs = new ArrayList<>();
 
         for (Conexion cliente : clientes) {
@@ -68,17 +68,17 @@ public class ServidorController implements IController {
     }
 
     public Integer getMaximasConexiones() {
-        return servidor.getGestorConexiones().getMaxConexiones();
+        return servidor.getGestorServidor().getPoolConexiones().getMaxConexiones();
     }
 
    public void solicitarTransmision(ConexionDTO clienteListado) {
-       Conexion clienteConectado = servidor.getGestorConexiones().obtenerConexionPorIp(clienteListado.getIp());
-        servidor.getGestorConexiones().solicitarTransmision(clienteConectado);
+       Conexion clienteConectado = servidor.getGestorServidor().buscarCliente(clienteListado);
+        servidor.getGestorServidor().solicitarTransmision(clienteConectado);
    }
 
    public void cerrarTransmision(ConexionDTO clienteListado) {
-        Conexion cliente = servidor.getGestorConexiones().obtenerConexionPorIp(clienteListado.getIp());
-        servidor.getGestorConexiones().cerrarTransmision(cliente);
+       Conexion clienteConectado = servidor.getGestorServidor().buscarCliente(clienteListado);
+        servidor.getGestorServidor().cerrarTransmision(clienteConectado);
    }
 
 

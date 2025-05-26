@@ -1,13 +1,17 @@
 package org.proy.monitorizerdesktop.clientserver.classes.server;
 
+import org.proy.monitorizerdesktop.clientserver.utils.EstatusConexion;
+import org.springframework.context.ApplicationEventPublisher;
+
 import java.io.*;
 import java.net.Socket;
 
 public class Conexion implements Runnable {
 
-    private GestorServidor gestor;
     private Socket socket;
     private volatile Boolean activo;
+
+    private ApplicationEventPublisher eventPublisher;
 
     public void setActivo(Boolean activo) {
         this.activo = activo;
@@ -17,32 +21,36 @@ public class Conexion implements Runnable {
         return socket;
     }
 
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
     public String getIp(){
         return socket.getInetAddress().getHostAddress();
     }
+
+
 
     public Integer getPort(){
         return socket.getPort();
     }
 
 
-    public Conexion(Socket socket, GestorServidor gestor) {
-        this.gestor = gestor;
+    public Conexion(Socket socket) {
         this.socket = socket;
     }
 
     public void cerrarConexion() {
-       gestor.cerrarTransmision(this);
-       gestor.notificarDesconexion(this);
+
        this.activo = false;
 
         try {
             if (socket != null && !socket.isClosed()) {
                 socket.close();
-                System.out.println(" Conexión cerrada con el cliente: " + socket.getInetAddress().getHostAddress());
+                System.out.println("Conexión cerrada con el cliente: " + socket.getInetAddress().getHostAddress());
             }
         } catch (IOException e) {
-            System.out.println(" Error al cerrar la conexión: " + e.getMessage());
+            System.out.println("Error al cerrar la conexión: " + e.getMessage());
         }
     }
 
@@ -50,13 +58,18 @@ public class Conexion implements Runnable {
     public void run() {
         activo = true;
         while (activo) {
-            mantenerCanal("");
+            transmitirInformacion(EstatusConexion.PING.name());
+            try {
+                Thread.sleep(100);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
         System.out.println("Conexión establecida con: " + socket.getInetAddress().getHostAddress() + ":" + socket.getPort());
     }
 
 
-    public void mantenerCanal(String mensaje) {
+    public void transmitirInformacion(String mensaje) {
         try {
             OutputStream out = socket.getOutputStream();
             DataOutputStream dos = new DataOutputStream(out);
