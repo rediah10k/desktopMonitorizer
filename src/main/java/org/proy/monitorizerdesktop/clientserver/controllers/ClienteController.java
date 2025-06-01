@@ -25,6 +25,13 @@ public class ClienteController implements IController {
 
    }
 
+
+    @Override
+    public UsuarioDTO getUsuario() {
+        return this.cliente.getUsuario();
+    }
+
+
     public void suscribirseAListener(ClienteView view) {
         cliente.getGestorCliente().setClienteListener(view);
     }
@@ -37,12 +44,8 @@ public class ClienteController implements IController {
         this.cliente.getGestorCliente().setPuerto(puerto);
    }
 
-    @Override
-    public UsuarioDTO getUsuario() {
-        return this.cliente.getUsuario();
-    }
 
-    public void iniciarEscucha() {
+   public void iniciarCliente() {
        this.cliente.iniciarEscucha();
    }
 

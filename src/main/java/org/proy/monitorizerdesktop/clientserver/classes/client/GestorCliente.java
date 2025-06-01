@@ -2,6 +2,9 @@ package org.proy.monitorizerdesktop.clientserver.classes.client;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.proy.monitorizerdesktop.auth.repos.UsuarioRepository;
+import org.proy.monitorizerdesktop.clientserver.dtos.UsuarioDTO;
+import org.proy.monitorizerdesktop.clientserver.services.UserService;
 import org.proy.monitorizerdesktop.clientserver.utils.EstatusConexion;
 import org.proy.monitorizerdesktop.clientserver.views.ClienteView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,42 +15,33 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 @Component
-public class GestorCliente implements Runnable {
+public class GestorCliente {
 
     @Getter
     @Setter
+
     private Integer puerto;
+    private DataInputStream dis;
     private ServerSocket serverSocket;
     private Socket conexion;
     private ClienteListener clienteListener;
     private TransmisorVideo transmisorVideo;
+    private TransmisorEventos transmisorEventos;
 
     @Autowired
-    public GestorCliente( TransmisorVideo transmisorVideo) {
-        this.transmisorVideo = transmisorVideo;
-    }
+    public GestorCliente(  ClienteListener clienteListener, TransmisorEventos transmisorEventos, TransmisorVideo transmisorVideo) {
+        this.clienteListener = clienteListener;
 
-    public void setClienteListener(ClienteView clienteView) {
-        this.clienteListener = new ClienteListener(clienteView);
-    }
 
-    public void iniciarSocketServer() {
+
+    public void esperarConexion(UsuarioDTO usuario) {
         try {
             this.serverSocket = new ServerSocket(puerto);
-            new Thread(this).start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void run() {
-        try {
             System.out.println("Esperando conexión del servidor...");
             conexion = serverSocket.accept();
             System.out.println("Conexión establecida desde el servidor: " + conexion.getInetAddress());
             clienteListener.onConexionAceptada();
-            new Thread(this::escucharServidor).start();
+            enviarIdCliente(usuario);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -56,7 +50,8 @@ public class GestorCliente implements Runnable {
 
     private void escucharServidor() {
         try {
-            DataInputStream dis = new DataInputStream(conexion.getInputStream());
+
+            dis = new DataInputStream(conexion.getInputStream());
             while (true) {
                 int longitud = dis.readInt();
                 byte[] buffer = new byte[longitud];
@@ -119,4 +114,19 @@ public class GestorCliente implements Runnable {
         }
     }
 
-}
+    public void enviarIdCliente(UsuarioDTO usuario) {
+
+        try{
+
+            DataOutputStream dos = new DataOutputStream(conexion.getOutputStream());
+            String id = String.valueOf(usuario.getId());
+            byte[] datos = id.getBytes(StandardCharsets.UTF_8);
+            dos.writeInt(datos.length);
+            dos.write(datos);
+            dos.flush();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        new Thread(this::escucharServidor).start();
+
+}}
