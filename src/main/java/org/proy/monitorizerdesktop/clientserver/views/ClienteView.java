@@ -15,14 +15,15 @@ import java.awt.*;
 public class ClienteView extends JFrame {
 
     JPanel panel;
-    private ClienteController clienteController;
+    private ClienteController controller;
     private JTextArea estadoActual;
     private PuertoView puertoView;
 
     @Autowired
     public ClienteView(ClienteController clienteController, PuertoView puertoView) {
-        this.clienteController = clienteController;
+        this.controller = clienteController;
         this.puertoView = puertoView;
+        controller.suscribirseAListener(this);
         setConfigBase();
 
     }
@@ -44,16 +45,16 @@ public class ClienteView extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setContentPane(panel);
-        puertoView.setParentComponents(this, clienteController);
+        puertoView.setParentComponents(this, controller);
 
     }
 
     public void setUsuario(UsuarioDTO usuario) {
-        this.clienteController.setUsuario(usuario);
+        this.controller.setUsuario(usuario);
     }
 
     private void mostrarInterfazEscucha(){
-        this.clienteController.iniciarCliente();
+        this.controller.iniciarEscucha();
         vistaEspera();
     }
 
@@ -64,7 +65,7 @@ public class ClienteView extends JFrame {
         String ip= new IpPropiedades().obtenerIP();
         setTitle("Cliente - Esperando Conexiones");
 
-        estadoActual.setText( "Direccion IP: " +ip+"\nA la espera de conexiones en el puerto " + this.clienteController.getPuerto());
+        estadoActual.setText( "Direccion IP: " +ip+"\nA la espera de conexiones en el puerto " + this.controller.getPuerto());
         estadoActual.setFont(new Font("Arial", Font.PLAIN, 16));
         panel.add(estadoActual,BorderLayout.CENTER);
 

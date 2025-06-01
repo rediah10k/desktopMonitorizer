@@ -14,8 +14,6 @@ public class Conexion implements Runnable {
     private volatile Boolean activo;
     private Long clienteId;
 
-    private ApplicationEventPublisher eventPublisher;
-
     public void setActivo(Boolean activo) {
         this.activo = activo;
     }

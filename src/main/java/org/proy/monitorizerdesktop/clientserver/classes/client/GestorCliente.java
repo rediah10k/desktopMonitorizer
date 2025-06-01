@@ -6,6 +6,7 @@ import org.proy.monitorizerdesktop.auth.repos.UsuarioRepository;
 import org.proy.monitorizerdesktop.clientserver.dtos.UsuarioDTO;
 import org.proy.monitorizerdesktop.clientserver.services.UserService;
 import org.proy.monitorizerdesktop.clientserver.utils.EstatusConexion;
+import org.proy.monitorizerdesktop.clientserver.views.ClienteView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.io.*;
@@ -27,14 +28,10 @@ public class GestorCliente {
     private TransmisorVideo transmisorVideo;
     private TransmisorEventos transmisorEventos;
 
-
     @Autowired
     public GestorCliente(  ClienteListener clienteListener, TransmisorEventos transmisorEventos, TransmisorVideo transmisorVideo) {
         this.clienteListener = clienteListener;
-        this.transmisorVideo = transmisorVideo;
-        this.transmisorEventos = transmisorEventos;
 
-    }
 
 
     public void esperarConexion(UsuarioDTO usuario) {
@@ -72,7 +69,6 @@ public class GestorCliente {
             clienteListener.onConexionCerrada();
         }
     }
-
 
     private void procesarMensaje(String mensaje) {
         if(mensaje.startsWith(EstatusConexion.INICIAR_TRANSMISION.name())) {

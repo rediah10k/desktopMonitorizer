@@ -2,6 +2,7 @@ package org.proy.monitorizerdesktop.clientserver.classes.server;
 import org.proy.monitorizerdesktop.clientserver.dtos.ConexionDTO;
 import org.proy.monitorizerdesktop.clientserver.dtos.SesionDTO;
 import org.proy.monitorizerdesktop.clientserver.utils.EstatusConexion;
+import org.proy.monitorizerdesktop.clientserver.views.ServidorView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,15 +21,24 @@ public class GestorServidor {
     private PoolConexiones poolConexiones;
 
     @Autowired
-    public GestorServidor(ReceptorVideo receptorVideo,ReceptorEventos receptorEventos, ServidorListener servidorHandler, PoolConexiones poolConexiones) {
+
+    public GestorServidor(ReceptorVideo receptorVideo,ReceptorEventos receptorEventos, PoolConexiones poolConexiones) {
         this.receptorVideo = receptorVideo;
-        this.servidorListener = servidorHandler;
-        this.poolConexiones = poolConexiones;
         this.receptorEventos = receptorEventos;
+         this.poolConexiones = poolConexiones;
     }
+
 
     public ReceptorVideo getReceptorVideo() {
         return receptorVideo;
+
+    public void setServidorListener(ServidorView servidorView) {
+        this.servidorListener = new ServidorListener(servidorView);
+    }
+
+    public ReceptorVideo getReceptor() {
+        return receptor;
+
     }
 
     public PoolConexiones getPoolConexiones() {
