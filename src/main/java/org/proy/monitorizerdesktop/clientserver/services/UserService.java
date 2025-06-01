@@ -18,7 +18,8 @@ public class UserService {
     }
 
     public Optional<Usuario> loadUser(String email) {
-    return usuarioRepository.findByEmail(email);
+
+        return usuarioRepository.findByEmail(email);
     }
 
 

@@ -1,5 +1,6 @@
 package org.proy.monitorizerdesktop.clientserver.classes.server;
 import org.proy.monitorizerdesktop.clientserver.dtos.ConexionDTO;
+import org.proy.monitorizerdesktop.clientserver.dtos.SesionDTO;
 import org.proy.monitorizerdesktop.clientserver.utils.EstatusConexion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,20 +10,25 @@ import java.util.List;
 
 @Component
 public class GestorServidor {
-    private Thread recibirTransmision;
-    private ReceptorVideo receptor;
+
+    private Thread hiloRecibirVideo;
+    private Thread hiloRecibirEventos;
+
+    private ReceptorVideo receptorVideo;
+    private ReceptorEventos receptorEventos;
     private ServidorListener servidorListener;
     private PoolConexiones poolConexiones;
 
     @Autowired
-    public GestorServidor(ReceptorVideo receptor, ServidorListener servidorHandler, PoolConexiones poolConexiones) {
-        this.receptor = receptor;
+    public GestorServidor(ReceptorVideo receptorVideo,ReceptorEventos receptorEventos, ServidorListener servidorHandler, PoolConexiones poolConexiones) {
+        this.receptorVideo = receptorVideo;
         this.servidorListener = servidorHandler;
         this.poolConexiones = poolConexiones;
+        this.receptorEventos = receptorEventos;
     }
 
-    public ReceptorVideo getReceptor() {
-        return receptor;
+    public ReceptorVideo getReceptorVideo() {
+        return receptorVideo;
     }
 
     public PoolConexiones getPoolConexiones() {
@@ -38,11 +44,11 @@ public class GestorServidor {
     }
 
     public Integer getPuertoVideo() {
-        return this.getReceptor().getPuerto();
+        return this.getReceptorVideo().getPuerto();
     }
 
     public void setPuertoVideo(Integer puertoVideo) {
-        this.getReceptor().setPuerto(puertoVideo);
+        this.getReceptorVideo().setPuerto(puertoVideo);
     }
 
     public void agregarCliente(ConexionDTO conexionNueva) {
@@ -64,32 +70,41 @@ public class GestorServidor {
 
     public void solicitarTransmision(Conexion conexion) {
        conexion.transmitirInformacion(EstatusConexion.INICIAR_TRANSMISION.name() + " PUERTO: "+this.getPuertoVideo());
-       receptor.setProperties();
-       receptor.setTransmitiendo(true);
-       recibirTransmision = new Thread(this::actualizarTransmision);
-       recibirTransmision.start();
+        hiloRecibirVideo = new Thread(this::actualizarTransmisionFrames);
+        hiloRecibirEventos = new Thread(this::mostrarEventos);
+        hiloRecibirVideo.start();
+        hiloRecibirEventos.start();
     }
 
     public void cerrarTransmision(Conexion conexion) {
-        if(recibirTransmision != null) {
-            recibirTransmision.interrupt();
-            receptor.setTransmitiendo(false);
-            receptor.detenerGrabacion();
+        if(hiloRecibirVideo != null) {
+            hiloRecibirVideo.interrupt();
+            receptorVideo.setTransmitiendo(false);
+            receptorVideo.detenerGrabacion();
             conexion.transmitirInformacion(EstatusConexion.DETENER_TRANSMISION.name());
             servidorListener.onTransmisionCerrada();
-
         }
     }
 
-
-    public void actualizarTransmision() {
-        while(receptor.isTransmitiendo()) {
-            BufferedImage frame = receptor.iniciarRecepcion();
+    public void actualizarTransmisionFrames() {
+        receptorVideo.setProperties();
+        receptorVideo.setTransmitiendo(true);
+        while(receptorVideo.isTransmitiendo()) {
+            BufferedImage frame = receptorVideo.iniciarRecepcion();
             if(frame == null) {
                 return;
             }
             servidorListener.onTransmision(frame);
         }
 
+    }
+
+    public void mostrarEventos(){
+        receptorEventos.setProperties();
+        receptorEventos.setTransmitiendo(true);
+        while(receptorEventos.isTransmitiendo()){
+            String mensaje=receptorEventos.leerEventoRecibido();
+            System.out.println(mensaje);
+        }
     }
 }

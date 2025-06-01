@@ -1,9 +1,15 @@
 package org.proy.monitorizerdesktop.clientserver.dtos;
 
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class UsuarioDTO {
 
-    public String email;
-    public Long Id;
+    private String email;
+    private Long Id;
 
     public UsuarioDTO(String email, Long Id) {
         this.email = email;

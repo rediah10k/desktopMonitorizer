@@ -3,6 +3,7 @@ package org.proy.monitorizerdesktop.clientserver.controllers;
 import org.proy.monitorizerdesktop.clientserver.classes.interfaces.IController;
 import org.proy.monitorizerdesktop.clientserver.classes.server.Conexion;
 import org.proy.monitorizerdesktop.clientserver.dtos.ConexionDTO;
+import org.proy.monitorizerdesktop.clientserver.dtos.SesionDTO;
 import org.proy.monitorizerdesktop.clientserver.dtos.UsuarioDTO;
 import org.proy.monitorizerdesktop.clientserver.classes.server.Servidor;
 import org.proy.monitorizerdesktop.clientserver.services.UserService;
@@ -79,6 +80,7 @@ public class ServidorController implements IController {
    public void cerrarTransmision(ConexionDTO clienteListado) {
        Conexion clienteConectado = servidor.getGestorServidor().buscarCliente(clienteListado);
         servidor.getGestorServidor().cerrarTransmision(clienteConectado);
+       SesionDTO sesionGenerada= new SesionDTO(clienteConectado.getClienteId(),servidor.getUsuario().getId())
    }
 
 

@@ -43,6 +43,7 @@ public class ReceptorVideo {
        cerrar();
        try{
            serverSocket = new ServerSocket(puerto);
+
            socket = serverSocket.accept();
            dis = new DataInputStream(socket.getInputStream());
            generadorVideoLocal = new GeneradorVideoLocal();
@@ -91,8 +92,8 @@ public class ReceptorVideo {
         }
     }
 
-    public void cerrar() {
 
+    public void cerrar() {
         try { if (dis != null) dis.close(); } catch (IOException ignored) {}
         try { if (socket != null && !socket.isClosed()) socket.close(); } catch (IOException ignored) {}
         try { if (serverSocket != null && !serverSocket.isClosed()) serverSocket.close(); } catch (IOException ignored) {}

@@ -1,15 +1,18 @@
 package org.proy.monitorizerdesktop.clientserver.classes.server;
 
+import org.proy.monitorizerdesktop.clientserver.dtos.UsuarioDTO;
 import org.proy.monitorizerdesktop.clientserver.utils.EstatusConexion;
+import org.proy.monitorizerdesktop.entities.Usuario;
 import org.springframework.context.ApplicationEventPublisher;
-
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 public class Conexion implements Runnable {
 
     private Socket socket;
     private volatile Boolean activo;
+    private Long clienteId;
 
     private ApplicationEventPublisher eventPublisher;
 
@@ -29,12 +32,13 @@ public class Conexion implements Runnable {
         return socket.getInetAddress().getHostAddress();
     }
 
-
-
     public Integer getPort(){
         return socket.getPort();
     }
 
+    public Long getClienteId(){
+        return clienteId;
+    }
 
     public Conexion(Socket socket) {
         this.socket = socket;
@@ -43,7 +47,6 @@ public class Conexion implements Runnable {
     public void cerrarConexion() {
 
        this.activo = false;
-
         try {
             if (socket != null && !socket.isClosed()) {
                 socket.close();
@@ -57,6 +60,7 @@ public class Conexion implements Runnable {
     @Override
     public void run() {
         activo = true;
+        recibirIdCliente();
         while (activo) {
             transmitirInformacion(EstatusConexion.PING.name());
             try {
@@ -82,6 +86,20 @@ public class Conexion implements Runnable {
             System.out.println("Cliente desconectado: ");
             cerrarConexion();
         }
+    }
+
+    public void recibirIdCliente(){
+        try{
+            DataInputStream dis = new DataInputStream(socket.getInputStream());
+            int longitud = dis.readInt();
+            byte[] buffer = new byte[longitud];
+            dis.readFully(buffer);
+            clienteId = Long.valueOf(new String(buffer, StandardCharsets.UTF_8));
+            System.out.println("ID del cliente conectado: " + clienteId);
+        }catch(Exception e){
+            System.out.println("Error al recibir idCliente: " + e.getMessage());
+        }
+
     }
 
     }

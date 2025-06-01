@@ -23,7 +23,12 @@ public class ClienteController implements IController {
 
    }
 
-   public Integer getPuerto(){
+    @Override
+    public UsuarioDTO getUsuario() {
+        return this.cliente.getUsuario();
+    }
+
+    public Integer getPuerto(){
         return cliente.getGestorCliente().getPuerto();
    }
 
@@ -31,12 +36,8 @@ public class ClienteController implements IController {
         this.cliente.getGestorCliente().setPuerto(puerto);
    }
 
-    @Override
-    public UsuarioDTO getUsuario() {
-        return this.cliente.getUsuario();
-    }
 
-    public void iniciarEscucha() {
+   public void iniciarCliente() {
        this.cliente.iniciarEscucha();
    }
 

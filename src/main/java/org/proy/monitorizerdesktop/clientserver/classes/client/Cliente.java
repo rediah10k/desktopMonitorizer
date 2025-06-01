@@ -9,17 +9,16 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class Cliente  {
+
     private UsuarioDTO usuario;
     private GestorCliente gestorCliente;
-
 
     public Cliente(GestorCliente gestorCliente ) {
         this.gestorCliente = gestorCliente;
     }
 
-
     public void iniciarEscucha() {
-      gestorCliente.iniciarSocketServer();
+        new Thread(() -> gestorCliente.esperarConexion(usuario)).start();
     }
 
 
