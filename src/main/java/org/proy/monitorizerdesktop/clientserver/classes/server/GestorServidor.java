@@ -82,19 +82,23 @@ public class GestorServidor {
 
 
     public void solicitarTransmision(Conexion conexion) {
-       conexion.transmitirInformacion(EstatusConexion.INICIAR_TRANSMISION.name() + " PUERTO: "+this.getPuertoVideo());
-        hiloRecibirVideo = new Thread(this::actualizarTransmisionFrames);
+        hiloRecibirVideo = new Thread(this::recibirFrames);
         hiloRecibirEventos = new Thread(this::mostrarEventos);
         hiloRecibirVideo.start();
         hiloRecibirEventos.start();
+        conexion.transmitirInformacion(EstatusConexion.INICIAR_TRANSMISION.name() + " PUERTO: "+this.getPuertoVideo());
+
     }
 
     public void cerrarTransmision(Conexion conexion) {
         if(hiloRecibirVideo != null) {
             hiloRecibirVideo.interrupt();
+
+            conexion.transmitirInformacion(EstatusConexion.DETENER_TRANSMISION.name());
             receptorVideo.setTransmitiendo(false);
             receptorVideo.detenerGrabacion();
-            conexion.transmitirInformacion(EstatusConexion.DETENER_TRANSMISION.name());
+            receptorEventos.setTransmitiendo(false);
+            receptorEventos.detenerRecepcion();
             servidorListener.onTransmisionCerrada();
         }
     }
@@ -103,7 +107,7 @@ public class GestorServidor {
         return receptorVideo.almacenarVideoTransmitido();
     }
 
-    public void actualizarTransmisionFrames() {
+    public void recibirFrames() {
         receptorVideo.setProperties();
         receptorVideo.setTransmitiendo(true);
         while(receptorVideo.isTransmitiendo()) {

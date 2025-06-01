@@ -23,7 +23,15 @@ public class TransmisorEventos {
         this.capturadorEventos = new CapturadorEventos(this);
     }
 
-    public void enviarEvento(String evento) {
+
+
+    public void iniciarTransmision() {
+        transmitiendo = true;
+        hiloTransmision = new Thread(() -> mantenerCanal(""));
+        hiloTransmision.start();
+    }
+
+    public void mantenerCanal(String evento) {
         if(transmitiendo){
             try {
                 OutputStream out = socket.getOutputStream();
@@ -39,11 +47,19 @@ public class TransmisorEventos {
         }
     }
 
+    public void enviarEvento(String evento) {
+        if(transmitiendo){
+            mantenerCanal(evento);
+            System.out.println("Enviando evento: " + evento);
+        }
+    }
+
     public void setProperties(String host, Integer puerto) {
 
         try {
             socket = new Socket(host, puerto);
             dos = new DataOutputStream(socket.getOutputStream());
+            System.out.println("Socket para transmitir eventos");
         } catch (IOException e) {
             throw new RuntimeException("Error al establecer conexión para transmisión", e);
         }
@@ -55,11 +71,38 @@ public class TransmisorEventos {
             System.err.println("Error al registrar hook nativo");
             ex.printStackTrace();
         }
-
+        registrarCapturador();
 
     }
 
+    public void registrarCapturador(){
+        capturadorEventos = new CapturadorEventos(this);
+        GlobalScreen.addNativeKeyListener(capturadorEventos);
+        GlobalScreen.addNativeMouseListener(capturadorEventos);
+        GlobalScreen.addNativeMouseMotionListener(capturadorEventos);
+    }
 
+    public void desregistrarCapturador(){
+        if (capturadorEventos != null) {
+            GlobalScreen.removeNativeKeyListener(capturadorEventos);
+            GlobalScreen.removeNativeMouseListener(capturadorEventos);
+            GlobalScreen.removeNativeMouseMotionListener(capturadorEventos);
+        }
+    }
+
+    public void detenerTransmision() {
+        desregistrarCapturador();
+        transmitiendo = false;
+        hiloTransmision.interrupt();
+
+        try {
+            if (hiloTransmision != null) hiloTransmision.join(1000);
+            if (dos != null) dos.close();
+            if (socket != null && !socket.isClosed()) socket.close();
+        } catch (Exception e) {
+            System.err.println("Error al cerrar transmisión: " + e.getMessage());
+        }
+    }
 
 
 

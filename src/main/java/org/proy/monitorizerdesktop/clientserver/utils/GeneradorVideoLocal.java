@@ -69,7 +69,7 @@ public class GeneradorVideoLocal {
             Frame frame = converter.convert(corrected);
             recorder.record(frame);
         }catch (Exception e){
-            e.printStackTrace();
+            System.out.println("Error al recorrer el frame, probablemente se detuvo la captura");
         }
     }
 
@@ -97,9 +97,6 @@ public class GeneradorVideoLocal {
         long timeStamp = (now - startTime)*1000;
         recorder.setTimestamp(timeStamp);
     }
-
-
-
 
     public File guardarVideo(String path) {
         try {
