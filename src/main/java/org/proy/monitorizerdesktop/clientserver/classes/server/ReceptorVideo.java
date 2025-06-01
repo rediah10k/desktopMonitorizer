@@ -28,6 +28,7 @@ public class ReceptorVideo {
     }
 
     public void setTransmitiendo(Boolean transmitiendo) {
+
         this.transmitiendo = transmitiendo;
     }
 
@@ -57,7 +58,7 @@ public class ReceptorVideo {
 
     public BufferedImage iniciarRecepcion() {
      try{
-            Thread.sleep(1000/3);
+            Thread.sleep(1000/20);
              int longitud = dis.readInt();
              byte[] datos = new byte[longitud];
              dis.readFully(datos);

@@ -30,7 +30,6 @@ public class ReceptorEventos {
             serverSocket = new ServerSocket(puerto);
             System.out.println("A la espera para recepcion de eventos en el puerto: " + puerto);
             socket = serverSocket.accept();
-            System.out.println("Cliente conectado para recibir eventos");
             dis = new DataInputStream(socket.getInputStream());
 
         } catch (IOException e) {
@@ -40,7 +39,6 @@ public class ReceptorEventos {
 
     public String leerEventoRecibido() {
         try {
-            while (transmitiendo) {
                 int longitud = dis.readInt();
                 byte[] buffer = new byte[longitud];
                 dis.readFully(buffer);
@@ -49,11 +47,14 @@ public class ReceptorEventos {
                     return mensaje;
                 }
                 Thread.sleep(100);
-            }
         } catch (Exception e) {
             System.out.println("Error al leer del servidor o conexión cerrada: " + e.getMessage());
         }
         return "";
+    }
+
+    public void detenerRecepcion(){
+        transmitiendo = false;
     }
 
     public void cerrar() {

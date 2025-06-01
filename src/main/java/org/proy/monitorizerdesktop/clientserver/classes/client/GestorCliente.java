@@ -80,12 +80,15 @@ public class GestorCliente {
             System.out.println("INICIAR TRANSMISION");
             Integer puerto = extraerPuerto(mensaje);
             transmisorVideo.setProperties(conexion.getInetAddress().getHostAddress(), puerto);
+            transmisorEventos.setProperties(conexion.getInetAddress().getHostAddress(), 2535);
            transmisorVideo.iniciarTransmision();
+            transmisorEventos.iniciarTransmision();
             clienteListener.onTransmision();
 
         }if(mensaje.equals(EstatusConexion.DETENER_TRANSMISION.name())) {
             System.out.println("FINALIZAR TRANSMISION");
             transmisorVideo.detenerTransmision();
+            transmisorEventos.detenerTransmision();
             clienteListener.onConexionAceptada();
 
         }
