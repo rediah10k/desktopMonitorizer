@@ -29,10 +29,15 @@ public class GestorCliente {
     private TransmisorEventos transmisorEventos;
 
     @Autowired
-    public GestorCliente(  ClienteListener clienteListener, TransmisorEventos transmisorEventos, TransmisorVideo transmisorVideo) {
-        this.clienteListener = clienteListener;
+    public GestorCliente(  TransmisorEventos transmisorEventos, TransmisorVideo transmisorVideo) {
+        this.transmisorEventos = transmisorEventos;
+        this.transmisorVideo = transmisorVideo;
 
+    }
 
+    public void setClienteListener(ClienteView view) {
+        clienteListener = new ClienteListener(view);
+    }
 
     public void esperarConexion(UsuarioDTO usuario) {
         try {
@@ -129,4 +134,10 @@ public class GestorCliente {
         }
         new Thread(this::escucharServidor).start();
 
-}}
+}
+
+
+}
+
+
+

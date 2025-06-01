@@ -54,7 +54,7 @@ public class ClienteView extends JFrame {
     }
 
     private void mostrarInterfazEscucha(){
-        this.controller.iniciarEscucha();
+        this.controller.iniciarCliente();
         vistaEspera();
     }
 

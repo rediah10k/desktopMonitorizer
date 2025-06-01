@@ -44,7 +44,6 @@ public class ClienteController implements IController {
         this.cliente.getGestorCliente().setPuerto(puerto);
    }
 
-
    public void iniciarCliente() {
        this.cliente.iniciarEscucha();
    }
