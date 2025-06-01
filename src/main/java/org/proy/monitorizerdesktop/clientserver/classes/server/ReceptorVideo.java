@@ -1,11 +1,15 @@
 package org.proy.monitorizerdesktop.clientserver.classes.server;
 
+import org.proy.monitorizerdesktop.clientserver.dtos.SesionDTO;
 import org.proy.monitorizerdesktop.clientserver.utils.GeneradorVideoLocal;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -85,11 +89,14 @@ public class ReceptorVideo {
         if (generadorVideoLocal != null) {
             try {
                 generadorVideoLocal.detenerGeneracion();
-                generadorVideoLocal.guardarVideo("servermedia");
             } catch (Exception e) {
                 System.out.println("Error al detener grabación: " + e.getMessage());
             }
         }
+    }
+
+    public File almacenarVideoTransmitido() {
+        return generadorVideoLocal.guardarVideo("servermedia");
     }
 
 

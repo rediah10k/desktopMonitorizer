@@ -101,7 +101,7 @@ public class GeneradorVideoLocal {
 
 
 
-    public void guardarVideo(String path) {
+    public File guardarVideo(String path) {
         try {
             File mediaDir = new File(path);
             if (!mediaDir.exists()) {
@@ -116,28 +116,26 @@ public class GeneradorVideoLocal {
 
             if (!temp.exists() || temp.length() == 0) {
                 System.err.println("El archivo temporal no existe o está vacío.");
-                return;
+                return null;
             }
-
 
             try {
                 Files.move(temp.toPath(), outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 System.out.println("Video guardado en: " + outputFile.getAbsolutePath());
             } catch (Exception moveEx) {
-
                 System.err.println("Falló move, intentando copy + delete...");
                 Files.copy(temp.toPath(), outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 temp.delete();
                 System.out.println("Video guardado con copia en: " + outputFile.getAbsolutePath());
             }
 
+            return outputFile;
+
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
     }
-
-
-
 
 }
 

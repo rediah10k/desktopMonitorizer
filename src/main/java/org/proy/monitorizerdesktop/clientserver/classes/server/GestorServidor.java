@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.List;
 
 @Component
@@ -96,6 +97,10 @@ public class GestorServidor {
             conexion.transmitirInformacion(EstatusConexion.DETENER_TRANSMISION.name());
             servidorListener.onTransmisionCerrada();
         }
+    }
+
+    public File almacenanarVideoTransmitido() {
+        return receptorVideo.almacenarVideoTransmitido();
     }
 
     public void actualizarTransmisionFrames() {

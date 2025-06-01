@@ -7,10 +7,12 @@ import org.proy.monitorizerdesktop.clientserver.dtos.SesionDTO;
 import org.proy.monitorizerdesktop.clientserver.dtos.UsuarioDTO;
 import org.proy.monitorizerdesktop.clientserver.classes.server.Servidor;
 import org.proy.monitorizerdesktop.clientserver.services.UserService;
+import org.proy.monitorizerdesktop.clientserver.services.VideoService;
 import org.proy.monitorizerdesktop.clientserver.views.ServidorView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,11 +22,13 @@ public class ServidorController implements IController {
 
     private final Servidor servidor;
     private final UserService userService;
+    private final VideoService videoService;
 
     @Autowired
-    public ServidorController(Servidor servidor, UserService userService) {
+    public ServidorController(Servidor servidor, UserService userService, VideoService videoService) {
         this.servidor = servidor;
         this.userService = userService;
+        this.videoService = videoService;
     }
 
     @Override
@@ -79,15 +83,18 @@ public class ServidorController implements IController {
         return servidor.getGestorServidor().getPoolConexiones().getMaxConexiones();
     }
 
-   public void solicitarTransmision(ConexionDTO clienteListado) {
+    public void solicitarTransmision(ConexionDTO clienteListado) {
        Conexion clienteConectado = servidor.getGestorServidor().buscarCliente(clienteListado);
         servidor.getGestorServidor().solicitarTransmision(clienteConectado);
-   }
+    }
 
    public void cerrarTransmision(ConexionDTO clienteListado) {
        Conexion clienteConectado = servidor.getGestorServidor().buscarCliente(clienteListado);
-        servidor.getGestorServidor().cerrarTransmision(clienteConectado);
+       servidor.getGestorServidor().cerrarTransmision(clienteConectado);
+
        SesionDTO sesionGenerada= new SesionDTO(clienteConectado.getClienteId(),servidor.getUsuario().getId());
+       File videoGuardadoLocal = servidor.getGestorServidor().almacenanarVideoTransmitido();
+       videoService.persistirVideoGenerado(videoGuardadoLocal, sesionGenerada);
    }
 
 }
