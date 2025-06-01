@@ -30,14 +30,16 @@ public class GestorServidor {
 
 
     public ReceptorVideo getReceptorVideo() {
-        return receptorVideo;
+        return receptorVideo;    }
+
+
 
     public void setServidorListener(ServidorView servidorView) {
         this.servidorListener = new ServidorListener(servidorView);
     }
 
     public ReceptorVideo getReceptor() {
-        return receptor;
+        return receptorVideo;
 
     }
 

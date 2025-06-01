@@ -87,7 +87,7 @@ public class ServidorController implements IController {
    public void cerrarTransmision(ConexionDTO clienteListado) {
        Conexion clienteConectado = servidor.getGestorServidor().buscarCliente(clienteListado);
         servidor.getGestorServidor().cerrarTransmision(clienteConectado);
-       SesionDTO sesionGenerada= new SesionDTO(clienteConectado.getClienteId(),servidor.getUsuario().getId())
+       SesionDTO sesionGenerada= new SesionDTO(clienteConectado.getClienteId(),servidor.getUsuario().getId());
    }
 
 }
