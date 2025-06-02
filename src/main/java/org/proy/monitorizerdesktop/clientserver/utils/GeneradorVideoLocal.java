@@ -48,10 +48,12 @@ public class GeneradorVideoLocal {
 
     public void setRecorderProperties(){
         try{
+
             tmpVideo = "temp_" + UUID.randomUUID() + ".mp4";
             recorder= new FFmpegFrameRecorder(tmpVideo, width, height);
             recorder.setFormat("mp4");
             recorder.setFrameRate(fps);
+            recorder.setVideoBitrate(1920 * 1080* 3);
             recorder.setVideoCodec(avcodec.AV_CODEC_ID_H264);
             converter = new Java2DFrameConverter();
             startTime = System.currentTimeMillis();
@@ -59,19 +61,15 @@ public class GeneradorVideoLocal {
         }catch (Exception e){
             e.printStackTrace();
         }
-
     }
 
     public void anadirFrame(BufferedImage screen){
         if(screen==null){
             return;
         }
-
         long timeStamp = (System.currentTimeMillis() - startTime) * 1000L;
         recorder.setTimestamp(timeStamp);
-
         BufferedImage corrected = ajustarRGB(screen);
-        System.out.println("Frame agregado: " + screen.getWidth() + "x" + screen.getHeight());
         try{
             Frame frame = converter.convert(corrected);
             recorder.record(frame);

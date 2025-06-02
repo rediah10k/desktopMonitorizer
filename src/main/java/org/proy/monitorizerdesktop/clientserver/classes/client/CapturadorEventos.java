@@ -27,9 +27,17 @@ class CapturadorEventos implements NativeKeyListener, NativeMouseInputListener {
 
     @Override
     public void nativeMouseMoved(NativeMouseEvent e) {
-        String mensaje = "Mouse movido a: " + e.getX() + ", " + e.getY();
+        String mensaje = "Mouse arrastrado a: " + e.getX() + ", " + e.getY();
         eventosListener.onEventoCapturado(mensaje);
     }
+
+    @Override
+    public void nativeMouseDragged(NativeMouseEvent e) {
+        String mensaje = "Mouse presionado arrastrado a: " + e.getX() + ", " + e.getY();
+        eventosListener.onEventoCapturado(mensaje);
+    }
+
+
 
 
 }
