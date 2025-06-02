@@ -11,7 +11,7 @@ import java.io.File;
 public class CapturadorVideo {
 
     private Boolean capturando;
-    private Integer fps = 30;
+    private Integer fps = 60;
     private GeneradorVideoLocal videoGenerator;
     private CapturadorPantalla capturadorPantalla;
 
@@ -52,7 +52,6 @@ public class CapturadorVideo {
                     return null;
                 }
                 videoGenerator.anadirFrame(screen);
-                Thread.sleep(1000/fps);
                 return screen;
             }
 

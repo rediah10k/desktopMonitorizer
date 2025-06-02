@@ -22,6 +22,7 @@ public class ReceptorVideo {
     private DataInputStream dis;
     private Boolean transmitiendo;
     private Integer puerto;
+    private Integer fps=60;
 
     public void setPuerto(Integer puerto) {
         this.puerto = puerto;
@@ -52,7 +53,7 @@ public class ReceptorVideo {
            socket = serverSocket.accept();
            dis = new DataInputStream(socket.getInputStream());
            generadorVideoLocal = new GeneradorVideoLocal();
-           generadorVideoLocal.setFps(20);
+           generadorVideoLocal.setFps(fps);
 
        } catch (IOException e) {
            throw new RuntimeException(e);
@@ -62,7 +63,7 @@ public class ReceptorVideo {
 
     public BufferedImage iniciarRecepcion() {
      try{
-            Thread.sleep(1000/20);
+
              int longitud = dis.readInt();
              byte[] datos = new byte[longitud];
              dis.readFully(datos);
