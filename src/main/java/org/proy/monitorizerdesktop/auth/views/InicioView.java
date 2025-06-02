@@ -19,7 +19,6 @@ public class InicioView extends JFrame {
     private JLabel mensajeErrorLabel;
     private final InicioController controller;
 
-
     public InicioView(InicioController controller, VistaFactory vistaFactory) {
         this.controller = controller;
         this.vistaFactory = vistaFactory;
@@ -30,29 +29,35 @@ public class InicioView extends JFrame {
     private void buildUI() {
         setTitle("Inicio de Sesión");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 250);
+        setSize(600, 300);
         setLocationRelativeTo(null);
 
         JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEtchedBorder(), "Inicie sesión para comenzar",
+                0, 0, new Font("SansSerif", Font.BOLD, 14)
+        ));
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         JLabel emailLabel = new JLabel("Email:");
-        emailField = new JTextField();
+        emailField = new JTextField(20);
 
         JLabel passwordLabel = new JLabel("Contraseña:");
-        passwordField = new JPasswordField();
+        passwordField = new JPasswordField(20);
 
         JLabel rolLabel = new JLabel("Rol:");
         rolComboBox = new JComboBox<>(new String[]{"Cliente", "Servidor"});
-        rolComboBox.setSelectedIndex(-1);
+        rolComboBox.setSelectedIndex(0);
 
         mensajeErrorLabel = new JLabel("");
         mensajeErrorLabel.setForeground(Color.RED);
         mensajeErrorLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         iniciarButton = new JButton("Iniciar sesión");
+        iniciarButton.setPreferredSize(new Dimension(150, 30));
         iniciarButton.addActionListener(e -> {
             String email = getEmail();
             String password = getPassword();
@@ -79,16 +84,17 @@ public class InicioView extends JFrame {
         gbc.gridx = 1;
         panel.add(rolComboBox, gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2;
         panel.add(mensajeErrorLabel, gbc);
 
-        gbc.gridx = 1; gbc.gridy = 4;
+        gbc.gridy = 4;
+        gbc.anchor = GridBagConstraints.CENTER;
         panel.add(iniciarButton, gbc);
 
         getContentPane().add(panel);
         setVisible(true);
     }
+
 
     private Usuario iniciarSesion(String email, String password, String rol) {
 

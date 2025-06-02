@@ -1,7 +1,6 @@
 package org.proy.monitorizerdesktop.auth.views;
 
 import org.proy.monitorizerdesktop.clientserver.dtos.UsuarioDTO;
-import org.proy.monitorizerdesktop.clientserver.views.PuertoView;
 import org.proy.monitorizerdesktop.entities.Usuario;
 import org.proy.monitorizerdesktop.clientserver.views.ClienteView;
 import org.proy.monitorizerdesktop.clientserver.views.ServidorView;
