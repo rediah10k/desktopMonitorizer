@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 public class GeneradorVideoLocal {
     FFmpegFrameRecorder recorder;
@@ -20,6 +21,7 @@ public class GeneradorVideoLocal {
     Integer width=0;
     Integer height=0;
     Integer fps;
+    String tmpVideo = null;
 
     public FFmpegFrameRecorder getRecorder() {
         return recorder;
@@ -46,7 +48,8 @@ public class GeneradorVideoLocal {
 
     public void setRecorderProperties(){
         try{
-            recorder= new FFmpegFrameRecorder("output.mp4", width, height);
+            tmpVideo = "temp_" + UUID.randomUUID() + ".mp4";
+            recorder= new FFmpegFrameRecorder(tmpVideo, width, height);
             recorder.setFormat("mp4");
             recorder.setFrameRate(fps);
             recorder.setVideoCodec(avcodec.AV_CODEC_ID_H264);
@@ -63,8 +66,12 @@ public class GeneradorVideoLocal {
         if(screen==null){
             return;
         }
-        colocarMarcaTiempo();
+
+        long timeStamp = (System.currentTimeMillis() - startTime) * 1000L;
+        recorder.setTimestamp(timeStamp);
+
         BufferedImage corrected = ajustarRGB(screen);
+        System.out.println("Frame agregado: " + screen.getWidth() + "x" + screen.getHeight());
         try{
             Frame frame = converter.convert(corrected);
             recorder.record(frame);
@@ -92,12 +99,6 @@ public class GeneradorVideoLocal {
 
     }
 
-    public void colocarMarcaTiempo(){
-        long now = System.currentTimeMillis();
-        long timeStamp = (now - startTime)*1000;
-        recorder.setTimestamp(timeStamp);
-    }
-
     public File guardarVideo(String path) {
         try {
             File mediaDir = new File(path);
@@ -109,7 +110,7 @@ public class GeneradorVideoLocal {
             String fileName = "grabacion_" + timestamp + ".mp4";
             File outputFile = new File(mediaDir, fileName);
 
-            File temp = new File("output.mp4");
+            File temp = new File(tmpVideo);
 
             if (!temp.exists() || temp.length() == 0) {
                 System.err.println("El archivo temporal no existe o está vacío.");

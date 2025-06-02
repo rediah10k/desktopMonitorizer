@@ -4,14 +4,14 @@ import org.proy.monitorizerdesktop.clientserver.utils.GeneradorVideoLocal;
 import org.springframework.stereotype.Component;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-
+import java.io.File;
 
 
 @Component
 public class CapturadorVideo {
 
     private Boolean capturando;
-    private Integer fps = 20;
+    private Integer fps = 30;
     private GeneradorVideoLocal videoGenerator;
     private CapturadorPantalla capturadorPantalla;
 
@@ -68,7 +68,4 @@ public class CapturadorVideo {
         videoGenerator.detenerGeneracion();
         videoGenerator.guardarVideo("clientmedia");
     }
-    
-
-
 }

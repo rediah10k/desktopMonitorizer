@@ -50,7 +50,7 @@ public class TransmisorEventos {
     public void enviarEvento(String evento) {
         if(transmitiendo){
             mantenerCanal(evento);
-            System.out.println("Enviando evento: " + evento);
+           // System.out.println("Enviando evento: " + evento);
         }
     }
 

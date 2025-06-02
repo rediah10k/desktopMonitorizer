@@ -35,16 +35,18 @@ public class TransmisorVideo {
     }
 
     public void transmitirVideo() {
-        try{
+        try {
             capturador = new CapturadorVideo();
             capturador.iniciarCaptura();
+
             while (transmitiendo) {
-                BufferedImage screen= capturador.capturarVideo();
-                if(screen==null){
+                BufferedImage screen = capturador.capturarVideo();
+                if (screen == null) {
                     System.err.println("Frame capturado es null. Posiblemente se detuvo la captura.");
-                   transmitiendo = false;
+                    transmitiendo = false;
                     break;
                 }
+
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 ImageIO.write(screen, "jpg", baos);
                 byte[] imageBytes = baos.toByteArray();
@@ -54,10 +56,21 @@ public class TransmisorVideo {
                 dos.flush();
             }
 
-        }catch(IOException e){
+        } catch (IOException e) {
             System.err.println("Captura finalizada o fallida: " + e.getMessage());
+        } finally {
+            // Muy importante: aquí sí se ejecuta siempre
+            capturador.detenerCaptura();
+
+            try {
+                if (dos != null) dos.close();
+                if (socket != null && !socket.isClosed()) socket.close();
+            } catch (Exception e) {
+                System.err.println("Error al cerrar transmisión: " + e.getMessage());
+            }
         }
     }
+
 
     public void detenerTransmision() {
         capturador.detenerCaptura();
@@ -72,4 +85,6 @@ public class TransmisorVideo {
             System.err.println("Error al cerrar transmisión: " + e.getMessage());
         }
     }
+
+
 }
