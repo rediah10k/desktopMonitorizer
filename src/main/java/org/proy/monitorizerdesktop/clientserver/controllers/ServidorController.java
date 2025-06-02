@@ -21,13 +21,11 @@ import java.util.List;
 public class ServidorController implements IController {
 
     private final Servidor servidor;
-    private final UserService userService;
     private final VideoService videoService;
 
     @Autowired
-    public ServidorController(Servidor servidor, UserService userService, VideoService videoService) {
+    public ServidorController(Servidor servidor, VideoService videoService) {
         this.servidor = servidor;
-        this.userService = userService;
         this.videoService = videoService;
     }
 
@@ -67,6 +65,9 @@ public class ServidorController implements IController {
         servidor.getGestorServidor().desconectarCliente(clienteConectado);
     }
 
+    public void establecerMaximoConexiones(Integer maxConexiones) {
+        servidor.getListConexiones().getPoolConexiones().setMaxConexiones(maxConexiones);
+    }
 
     public List<ConexionDTO> obtenerUsuariosConectados() {
         List<Conexion> clientes =servidor.getGestorServidor().getPoolConexionesOcupadas();
@@ -96,5 +97,4 @@ public class ServidorController implements IController {
        File videoGuardadoLocal = servidor.getGestorServidor().almacenanarVideoTransmitido();
        videoService.persistirVideoGenerado(videoGuardadoLocal, sesionGenerada);
    }
-
 }

@@ -12,7 +12,7 @@ public class PoolConexiones {
 
     private List<Conexion> disponibles = new ArrayList<>();
     private List<Conexion> ocupadas = new ArrayList<>();
-    private Integer maxConexiones=2;
+    private Integer maxConexiones;
     private ConexionFactory conexionFactory;
 
     public PoolConexiones(ConexionFactory conexionFactory) {
@@ -33,6 +33,10 @@ public class PoolConexiones {
 
     public List<Conexion> getOcupadas() {
         return ocupadas;
+    }
+
+    public void setMaxConexiones(Integer maxConexiones) {
+        this.maxConexiones = maxConexiones;
     }
 
 

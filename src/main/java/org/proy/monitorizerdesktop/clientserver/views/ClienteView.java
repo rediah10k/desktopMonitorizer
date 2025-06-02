@@ -105,7 +105,7 @@ public class ClienteView extends JFrame {
         estadoActual.setBorder(null);
         estadoActual.setFocusable(false);
         panel = new JPanel(new GridLayout(2, 1));
-        setSize(500, 300);
+        setSize(600, 400);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setContentPane(panel);
