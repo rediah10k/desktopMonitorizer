@@ -22,11 +22,8 @@ public class ServidorView extends JFrame {
     private JButton btnNuevaConexion;
     private JButton btnCerrarConexion;
     private JButton btnMonitor;
-<<<<<<< HEAD
     private JButton btnCompartirArchivo;
-=======
     private JButton btnMaxConexiones;
->>>>>>> 392907795abe34b8a9a78753e7dc5ea9489653b5
     private ServidorController controller;
 
     @Autowired
@@ -54,9 +51,8 @@ public class ServidorView extends JFrame {
     private void buildUI() {
         setTitle("Servidor - Gestión de Conexiones");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-<<<<<<< HEAD
+
         setSize(800, 400);
-=======
 
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -133,7 +129,6 @@ public class ServidorView extends JFrame {
 
         setContentPane(panel);
         setSize(600, 400);
->>>>>>> 392907795abe34b8a9a78753e7dc5ea9489653b5
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -143,17 +138,14 @@ public class ServidorView extends JFrame {
         JPanel panelSuperior = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         btnNuevaConexion = new JButton("Nueva conexión");
-<<<<<<< HEAD
         btnCerrarConexion = new JButton("Cerrar conexion");
         btnMonitor= new JButton("Observar PC");
         btnCompartirArchivo= new JButton("Enviar archivo");
 
-=======
+
         btnCerrarConexion = new JButton("Cerrar conexión");
         btnMonitor = new JButton("Observar PC");
         btnMaxConexiones = new JButton("Cambiar Max Conexiones");
->>>>>>> 392907795abe34b8a9a78753e7dc5ea9489653b5
-
         labelEstado = new JLabel("");
 
         panelSuperior.add(btnNuevaConexion);
@@ -163,10 +155,6 @@ public class ServidorView extends JFrame {
         panelSuperior.add(labelEstado);
 
         JScrollPane scrollPane = new JScrollPane(table);
-<<<<<<< HEAD
-=======
-
->>>>>>> 392907795abe34b8a9a78753e7dc5ea9489653b5
         panelPrincipal.add(panelSuperior, BorderLayout.NORTH);
         panelPrincipal.add(scrollPane, BorderLayout.CENTER);
 
@@ -177,17 +165,15 @@ public class ServidorView extends JFrame {
             solicitarTransmision();
         });
 
-<<<<<<< HEAD
         btnCompartirArchivo.addActionListener(e -> {
             mostrarVentanaSeleccionArchivo();
         });
 
         add(panelPrincipal);
-=======
+
         setContentPane(panelPrincipal);
         setSize(600, 400);
         setLocationRelativeTo(null);
->>>>>>> 392907795abe34b8a9a78753e7dc5ea9489653b5
         actualizarTabla();
         revalidate();
         repaint();
@@ -235,20 +221,11 @@ public class ServidorView extends JFrame {
         centro.add(new JLabel("Puerto:"));
         centro.add(campoPuerto);
         frame.add(centro, BorderLayout.CENTER);
-<<<<<<< HEAD
         JPanel sur = new JPanel();
-        JButton botonConectar = new JButton("Conectar");
-        sur.add(botonConectar);
         frame.add(sur, BorderLayout.SOUTH);
-
-        botonConectar.addActionListener(e -> {
-            String ip = campoIP.getText().trim();
-            String puertoStr = campoPuerto.getText().trim();
-=======
-
         JButton conectar = new JButton("Conectar");
+        sur.add(conectar);
         conectar.addActionListener(e -> {
->>>>>>> 392907795abe34b8a9a78753e7dc5ea9489653b5
             try {
                 int puerto = Integer.parseInt(campoPuerto.getText().trim());
                 String ip = campoIP.getText().trim();
@@ -260,9 +237,7 @@ public class ServidorView extends JFrame {
             }
         });
 
-        JPanel sur = new JPanel();
-        sur.add(conectar);
-        frame.add(sur, BorderLayout.SOUTH);
+
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
