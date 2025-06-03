@@ -114,6 +114,7 @@ public class GestorServidor {
              transmisorArchivos.solicitarEnvio(c.getIp(),2636);
             new Thread(() -> {
                 transmisorArchivos.enviarArchivo(archivo);}).start();
+
         }
     }
 

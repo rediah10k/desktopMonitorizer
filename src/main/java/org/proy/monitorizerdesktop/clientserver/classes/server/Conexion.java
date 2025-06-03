@@ -1,19 +1,20 @@
 package org.proy.monitorizerdesktop.clientserver.classes.server;
 
 import lombok.Builder;
-import org.proy.monitorizerdesktop.clientserver.dtos.UsuarioDTO;
-import org.proy.monitorizerdesktop.clientserver.utils.EstatusConexion;
-import org.proy.monitorizerdesktop.entities.Usuario;
-import org.springframework.context.ApplicationEventPublisher;
+import lombok.Getter;
+import lombok.Setter;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 @Builder
+@Getter
+@Setter
 public class Conexion implements Runnable {
 
     private Socket socket;
-    private volatile Boolean activo;
+
+    private Boolean activo;
     private Long clienteId;
 
 
@@ -33,9 +34,6 @@ public class Conexion implements Runnable {
         return clienteId;
     }
 
-    public Conexion(Socket socket) {
-        this.socket = socket;
-    }
 
     public void cerrarConexion() {
 
