@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.UnknownHostException;
+
 
 @Component
 public class TransmisorArchivos {
@@ -16,7 +16,6 @@ public class TransmisorArchivos {
         }catch (Exception e){
             System.out.println("La conexion para transmitir archivos no sirve");
         }
-
     }
 
     public void enviarArchivo(File file) {

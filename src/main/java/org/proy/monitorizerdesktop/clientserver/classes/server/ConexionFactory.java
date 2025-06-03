@@ -21,7 +21,6 @@ public class ConexionFactory {
 
     public Conexion crearConexionNueva(ConexionDTO clienteNuevo) {
         Socket socket = generarSocket(clienteNuevo);
-        Conexion conexionNueva = new Conexion(socket);
-        return conexionNueva;
+        return Conexion.builder().socket(socket).build();
     }
 }

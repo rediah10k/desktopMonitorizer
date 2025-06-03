@@ -18,9 +18,9 @@ public class ClienteController implements IController {
         this.cliente = cliente;
     }
 
+    @Override
    public void setUsuario(UsuarioDTO usuario) {
         this.cliente.setUsuario(usuario);
-
    }
 
     @Override
@@ -28,17 +28,21 @@ public class ClienteController implements IController {
         return this.cliente.getUsuario();
     }
 
+
+    @Override
+    public Integer getPuerto(){
+        return cliente.getGestorCliente().getPuerto();
+    }
+
+    @Override
+    public void setPuerto(Integer puerto){
+        this.cliente.getGestorCliente().setPuerto(puerto);
+    }
+
     public void suscribirseAListener(ClienteView view) {
         cliente.getGestorCliente().setClienteListener(view);
     }
 
-   public Integer getPuerto(){
-        return cliente.getGestorCliente().getPuerto();
-   }
-
-   public void setPuerto(Integer puerto){
-        this.cliente.getGestorCliente().setPuerto(puerto);
-   }
 
    public void iniciarCliente() {
        this.cliente.iniciarEscucha();

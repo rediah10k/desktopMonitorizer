@@ -20,9 +20,6 @@ public class CapturadorVideo {
         videoGenerator = new GeneradorVideoLocal();
     }
 
-    public GeneradorVideoLocal getGeneradorVideoLocal() {
-        return videoGenerator;
-    }
 
     public void setCapturando(Boolean capturando) {
         this.capturando = capturando;
@@ -54,7 +51,6 @@ public class CapturadorVideo {
                 videoGenerator.anadirFrame(screen);
                 return screen;
             }
-
 
         } catch (Exception e) {
             System.err.println("Captura finalizada o fallida: " + e.getMessage());

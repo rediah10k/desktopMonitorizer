@@ -44,15 +44,15 @@ public class ServidorController implements IController {
     public UsuarioDTO getUsuario() {
         return servidor.getUsuario();
     }
-
+    @Override
+    public void setUsuario(UsuarioDTO usuario) {
+        this.servidor.setUsuario(usuario);
+    }
 
     public void suscribirseAListener(ServidorView view) {
         servidor.getGestorServidor().setServidorListener(view);
     }
 
-    public void setUsuario(UsuarioDTO usuario) {
-        this.servidor.setUsuario(usuario);
-    }
 
     public void agregarCliente(String ip, Integer puerto) {
         ConexionDTO nuevaConexion = new ConexionDTO(ip, puerto);
