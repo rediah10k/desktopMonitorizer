@@ -49,7 +49,6 @@ public class ReceptorVideo {
        cerrar();
        try{
            serverSocket = new ServerSocket(puerto);
-
            socket = serverSocket.accept();
            dis = new DataInputStream(socket.getInputStream());
            generadorVideoLocal = new GeneradorVideoLocal();
@@ -63,7 +62,6 @@ public class ReceptorVideo {
 
     public BufferedImage iniciarRecepcion() {
      try{
-
              int longitud = dis.readInt();
              byte[] datos = new byte[longitud];
              dis.readFully(datos);

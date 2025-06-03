@@ -2,9 +2,7 @@ package org.proy.monitorizerdesktop.clientserver.classes.client;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.proy.monitorizerdesktop.auth.repos.UsuarioRepository;
 import org.proy.monitorizerdesktop.clientserver.dtos.UsuarioDTO;
-import org.proy.monitorizerdesktop.clientserver.services.UserService;
 import org.proy.monitorizerdesktop.clientserver.utils.EstatusConexion;
 import org.proy.monitorizerdesktop.clientserver.views.ClienteView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,22 +14,22 @@ import java.nio.charset.StandardCharsets;
 
 @Component
 public class GestorCliente {
-
     @Getter
     @Setter
-
     private Integer puerto;
     private DataInputStream dis;
     private ServerSocket serverSocket;
-    private Socket conexion;
+    private Socket socket;
     private ClienteListener clienteListener;
     private TransmisorVideo transmisorVideo;
     private TransmisorEventos transmisorEventos;
+    private ReceptorArchivos receptorArchivos;
 
     @Autowired
-    public GestorCliente(  TransmisorEventos transmisorEventos, TransmisorVideo transmisorVideo) {
+    public GestorCliente(  TransmisorEventos transmisorEventos, TransmisorVideo transmisorVideo, ReceptorArchivos receptorArchivos) {
         this.transmisorEventos = transmisorEventos;
         this.transmisorVideo = transmisorVideo;
+        this.receptorArchivos = receptorArchivos;
 
     }
 
@@ -43,11 +41,10 @@ public class GestorCliente {
         try {
             this.serverSocket = new ServerSocket(puerto);
             System.out.println("Esperando conexión del servidor...");
-            conexion = serverSocket.accept();
-            System.out.println("Conexión establecida desde el servidor: " + conexion.getInetAddress());
+            socket = serverSocket.accept();
+            System.out.println("Conexión establecida desde el servidor: " + socket.getInetAddress());
             clienteListener.onConexionAceptada();
             enviarIdCliente(usuario);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -55,19 +52,16 @@ public class GestorCliente {
 
     private void escucharServidor() {
         try {
-
-            dis = new DataInputStream(conexion.getInputStream());
+            dis = new DataInputStream(socket.getInputStream());
             while (true) {
                 int longitud = dis.readInt();
                 byte[] buffer = new byte[longitud];
                 dis.readFully(buffer);
                 String mensaje = new String(buffer, StandardCharsets.UTF_8);
-                if (!mensaje.equals(EstatusConexion.PING.name())) {
+
                     procesarMensaje(mensaje);
-                }
                 Thread.sleep(100);
             }
-
         } catch (Exception e) {
             System.out.println("Error al leer del servidor o conexión cerrada: " + e.getMessage());
             cerrarConexion();
@@ -77,21 +71,21 @@ public class GestorCliente {
 
     private void procesarMensaje(String mensaje) {
         if(mensaje.startsWith(EstatusConexion.INICIAR_TRANSMISION.name())) {
-            System.out.println("INICIAR TRANSMISION");
             Integer puerto = extraerPuerto(mensaje);
-            transmisorVideo.setProperties(conexion.getInetAddress().getHostAddress(), puerto);
-            transmisorEventos.setProperties(conexion.getInetAddress().getHostAddress(), 2535);
+            transmisorVideo.setProperties(socket.getInetAddress().getHostAddress(), puerto);
+            transmisorEventos.setProperties(socket.getInetAddress().getHostAddress(), 2535);
            transmisorVideo.iniciarTransmision();
             transmisorEventos.iniciarTransmision();
             clienteListener.onTransmision();
-
         }if(mensaje.equals(EstatusConexion.DETENER_TRANSMISION.name())) {
-            System.out.println("FINALIZAR TRANSMISION");
             transmisorVideo.detenerTransmision();
             transmisorEventos.detenerTransmision();
             clienteListener.onConexionAceptada();
-
+        }if(mensaje.equals(EstatusConexion.INICIAR_ARCHIVO.name())) {
+            new Thread(() -> {
+                receptorArchivos.ponerEnEscucha();}).start();
         }
+
     }
 
     private Integer extraerPuerto(String mensaje) {
@@ -109,8 +103,8 @@ public class GestorCliente {
 
     public void cerrarConexion() {
         try {
-            if (conexion != null && !conexion.isClosed()) {
-                conexion.close();
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
                 System.out.println("Conexión cerrada.");
             }
             if (serverSocket != null && !serverSocket.isClosed()) {
@@ -123,10 +117,8 @@ public class GestorCliente {
     }
 
     public void enviarIdCliente(UsuarioDTO usuario) {
-
         try{
-
-            DataOutputStream dos = new DataOutputStream(conexion.getOutputStream());
+            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
             String id = String.valueOf(usuario.getId());
             byte[] datos = id.getBytes(StandardCharsets.UTF_8);
             dos.writeInt(datos.length);

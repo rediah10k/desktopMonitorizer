@@ -73,7 +73,6 @@ public class TransmisorVideo {
 
 
     public void detenerTransmision() {
-        capturador.detenerCaptura();
         transmitiendo = false;
         hiloTransmision.interrupt();
 

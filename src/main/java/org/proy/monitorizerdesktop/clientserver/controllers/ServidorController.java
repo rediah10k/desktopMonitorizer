@@ -66,7 +66,7 @@ public class ServidorController implements IController {
     }
 
     public void establecerMaximoConexiones(Integer maxConexiones) {
-        servidor.getListConexiones().getPoolConexiones().setMaxConexiones(maxConexiones);
+        servidor.getGestorServidor().getPoolConexiones().setMaxConexiones(maxConexiones);
     }
 
     public List<ConexionDTO> obtenerUsuariosConectados() {
@@ -97,4 +97,11 @@ public class ServidorController implements IController {
        File videoGuardadoLocal = servidor.getGestorServidor().almacenanarVideoTransmitido();
        videoService.persistirVideoGenerado(videoGuardadoLocal, sesionGenerada);
    }
+
+
+   public void enviarArchivoAClientes(File archivo) {
+       servidor.getGestorServidor().enviarArchivosAClientes(archivo);
+   }
+
+
 }

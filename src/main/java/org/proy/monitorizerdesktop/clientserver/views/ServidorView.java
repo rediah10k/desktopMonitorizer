@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.List;
 
 @Component
@@ -21,6 +22,7 @@ public class ServidorView extends JFrame {
     private JButton btnNuevaConexion;
     private JButton btnCerrarConexion;
     private JButton btnMonitor;
+    private JButton btnCompartirArchivo;
     private JButton btnMaxConexiones;
     private ServidorController controller;
 
@@ -49,6 +51,8 @@ public class ServidorView extends JFrame {
     private void buildUI() {
         setTitle("Servidor - Gestión de Conexiones");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        setSize(800, 400);
 
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -134,19 +138,23 @@ public class ServidorView extends JFrame {
         JPanel panelSuperior = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         btnNuevaConexion = new JButton("Nueva conexión");
+        btnCerrarConexion = new JButton("Cerrar conexion");
+        btnMonitor= new JButton("Observar PC");
+        btnCompartirArchivo= new JButton("Enviar archivo");
+
+
         btnCerrarConexion = new JButton("Cerrar conexión");
         btnMonitor = new JButton("Observar PC");
         btnMaxConexiones = new JButton("Cambiar Max Conexiones");
-
         labelEstado = new JLabel("");
 
         panelSuperior.add(btnNuevaConexion);
         panelSuperior.add(btnCerrarConexion);
+        panelSuperior.add(btnCompartirArchivo);
         panelSuperior.add(btnMonitor);
         panelSuperior.add(labelEstado);
 
         JScrollPane scrollPane = new JScrollPane(table);
-
         panelPrincipal.add(panelSuperior, BorderLayout.NORTH);
         panelPrincipal.add(scrollPane, BorderLayout.CENTER);
 
@@ -156,6 +164,12 @@ public class ServidorView extends JFrame {
             mostrarVentanaMonitor();
             solicitarTransmision();
         });
+
+        btnCompartirArchivo.addActionListener(e -> {
+            mostrarVentanaSeleccionArchivo();
+        });
+
+        add(panelPrincipal);
 
         setContentPane(panelPrincipal);
         setSize(600, 400);
@@ -207,8 +221,10 @@ public class ServidorView extends JFrame {
         centro.add(new JLabel("Puerto:"));
         centro.add(campoPuerto);
         frame.add(centro, BorderLayout.CENTER);
-
+        JPanel sur = new JPanel();
+        frame.add(sur, BorderLayout.SOUTH);
         JButton conectar = new JButton("Conectar");
+        sur.add(conectar);
         conectar.addActionListener(e -> {
             try {
                 int puerto = Integer.parseInt(campoPuerto.getText().trim());
@@ -221,12 +237,18 @@ public class ServidorView extends JFrame {
             }
         });
 
-        JPanel sur = new JPanel();
-        sur.add(conectar);
-        frame.add(sur, BorderLayout.SOUTH);
+
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+
+    public void mostrarVentanaSeleccionArchivo() {
+        JFileChooser chooser = new JFileChooser();
+        int result = chooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            controller.enviarArchivoAClientes(chooser.getSelectedFile());
+        }
     }
 
     public void mostrarVentanaCerrar() {

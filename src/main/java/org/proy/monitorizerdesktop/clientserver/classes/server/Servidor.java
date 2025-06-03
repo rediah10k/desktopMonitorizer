@@ -12,14 +12,14 @@ import org.springframework.stereotype.Component;
 public class Servidor {
 
     UsuarioDTO usuario;
-    GestorServidor listConexiones;
+    GestorServidor gestorServidor;
 
     public Servidor(GestorServidor listConexiones) {
-        this.listConexiones = listConexiones;
+        this.gestorServidor = listConexiones;
     }
 
     public GestorServidor getGestorServidor() {
-        return listConexiones;
+        return gestorServidor;
     }
 
 
