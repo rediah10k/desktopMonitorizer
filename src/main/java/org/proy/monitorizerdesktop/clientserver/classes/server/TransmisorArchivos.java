@@ -31,10 +31,21 @@ public class TransmisorArchivos {
                 while ((read = fis.read(buffer)) > 0) {
                     dos.write(buffer, 0, read);
                 }
-                System.out.println("Archivo enviado con éxito.");
+
+
 
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+        finally {
+            try {
+                if (socket != null && !socket.isClosed()) {
+                    socket.close();
+                    System.out.println("Se ha cerrado la conexion de transferencia de archivos");
+                }
+            } catch (IOException e) {
+                System.out.println("Error al cerrar la conexión de transferencia de archivos: " + e.getMessage());
+            }
         }
     }
 }
