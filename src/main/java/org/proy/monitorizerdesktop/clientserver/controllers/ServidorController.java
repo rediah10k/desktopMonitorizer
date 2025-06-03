@@ -97,4 +97,8 @@ public class ServidorController implements IController {
        videoService.persistirVideoGenerado(videoGuardadoLocal, sesionGenerada);
    }
 
+   public void enviarArchivoAClientes(File archivo) {
+       servidor.getGestorServidor().enviarArchivosAClientes(archivo);
+   }
+
 }

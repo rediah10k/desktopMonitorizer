@@ -19,10 +19,6 @@ public class PoolConexiones {
         this.conexionFactory = conexionFactory;
     }
 
-    public List<Conexion> getClientes() {
-        return ocupadas;
-    }
-
     public Integer getMaxConexiones() {
         return maxConexiones;
     }

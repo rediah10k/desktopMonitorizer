@@ -15,7 +15,6 @@ public class TransmisorEventos {
 
     private Socket socket;
     private DataOutputStream dos;
-    private Thread hiloTransmision;
     public CapturadorEventos capturadorEventos;
     public volatile Boolean transmitiendo=false;
 
@@ -27,11 +26,11 @@ public class TransmisorEventos {
 
     public void iniciarTransmision() {
         transmitiendo = true;
-        hiloTransmision = new Thread(() -> mantenerCanal(""));
-        hiloTransmision.start();
+
     }
 
-    public void mantenerCanal(String evento) {
+
+    public void enviarEvento(String evento) {
         if(transmitiendo){
             try {
                 OutputStream out = socket.getOutputStream();
@@ -44,13 +43,7 @@ public class TransmisorEventos {
             } catch (IOException e) {
                 System.out.println("Cliente desconectado: ");
             }
-        }
-    }
 
-    public void enviarEvento(String evento) {
-        if(transmitiendo){
-            mantenerCanal(evento);
-           // System.out.println("Enviando evento: " + evento);
         }
     }
 
@@ -93,10 +86,9 @@ public class TransmisorEventos {
     public void detenerTransmision() {
         desregistrarCapturador();
         transmitiendo = false;
-        hiloTransmision.interrupt();
+
 
         try {
-            if (hiloTransmision != null) hiloTransmision.join(1000);
             if (dos != null) dos.close();
             if (socket != null && !socket.isClosed()) socket.close();
         } catch (Exception e) {

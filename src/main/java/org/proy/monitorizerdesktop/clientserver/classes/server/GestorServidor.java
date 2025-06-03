@@ -15,25 +15,23 @@ public class GestorServidor {
 
     private Thread hiloRecibirVideo;
     private Thread hiloRecibirEventos;
-
+    private TransmisorArchivos transmisorArchivos;
     private ReceptorVideo receptorVideo;
     private ReceptorEventos receptorEventos;
     private ServidorListener servidorListener;
     private PoolConexiones poolConexiones;
 
     @Autowired
-
-    public GestorServidor(ReceptorVideo receptorVideo,ReceptorEventos receptorEventos, PoolConexiones poolConexiones) {
+    public GestorServidor(TransmisorArchivos transmisorArchivos, ReceptorVideo receptorVideo,ReceptorEventos receptorEventos, PoolConexiones poolConexiones) {
         this.receptorVideo = receptorVideo;
         this.receptorEventos = receptorEventos;
          this.poolConexiones = poolConexiones;
+         this.transmisorArchivos = transmisorArchivos;
     }
 
-
     public ReceptorVideo getReceptorVideo() {
-        return receptorVideo;    }
-
-
+        return receptorVideo;
+    }
 
     public void setServidorListener(ServidorView servidorView) {
         this.servidorListener = new ServidorListener(servidorView);
@@ -41,7 +39,6 @@ public class GestorServidor {
 
     public ReceptorVideo getReceptor() {
         return receptorVideo;
-
     }
 
     public PoolConexiones getPoolConexiones() {
@@ -93,7 +90,6 @@ public class GestorServidor {
     public void cerrarTransmision(Conexion conexion) {
         if(hiloRecibirVideo != null) {
             hiloRecibirVideo.interrupt();
-
             conexion.transmitirInformacion(EstatusConexion.DETENER_TRANSMISION.name());
             receptorVideo.setTransmitiendo(false);
             receptorVideo.detenerGrabacion();
@@ -104,6 +100,7 @@ public class GestorServidor {
     }
 
     public File almacenanarVideoTransmitido() {
+
         return receptorVideo.almacenarVideoTransmitido();
     }
 
@@ -116,6 +113,16 @@ public class GestorServidor {
                 return;
             }
             servidorListener.onTransmision(frame);
+        }
+
+    }
+
+    public void enviarArchivosAClientes(File archivo) {
+        for (Conexion c : getPoolConexionesOcupadas()) {
+            c.transmitirInformacion(EstatusConexion.INICIAR_ARCHIVO.name());
+             transmisorArchivos.solicitarEnvio(c.getIp(),2636);
+            new Thread(() -> {
+                transmisorArchivos.enviarArchivo(archivo);}).start();
         }
 
     }

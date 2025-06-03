@@ -60,16 +60,13 @@ public class Conexion implements Runnable {
         activo = true;
         recibirIdCliente();
         while (activo) {
-            transmitirInformacion(EstatusConexion.PING.name());
             try {
                 Thread.sleep(100);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
-        System.out.println("Conexión establecida con: " + socket.getInetAddress().getHostAddress() + ":" + socket.getPort());
     }
-
 
     public void transmitirInformacion(String mensaje) {
         try {
@@ -79,7 +76,6 @@ public class Conexion implements Runnable {
             dos.writeInt(datos.length);
             dos.write(datos);
             dos.flush();
-
         } catch (IOException e) {
             System.out.println("Cliente desconectado: ");
             cerrarConexion();

@@ -53,7 +53,7 @@ public class GeneradorVideoLocal {
             recorder= new FFmpegFrameRecorder(tmpVideo, width, height);
             recorder.setFormat("mp4");
             recorder.setFrameRate(fps);
-            recorder.setVideoBitrate(1920 * 1080* 3);
+            recorder.setVideoBitrate(width * height*1);
             recorder.setVideoCodec(avcodec.AV_CODEC_ID_H264);
             converter = new Java2DFrameConverter();
             startTime = System.currentTimeMillis();
