@@ -59,9 +59,7 @@ public class TransmisorVideo {
         } catch (IOException e) {
             System.err.println("Captura finalizada o fallida: " + e.getMessage());
         } finally {
-            // Muy importante: aquí sí se ejecuta siempre
             capturador.detenerCaptura();
-
             try {
                 if (dos != null) dos.close();
                 if (socket != null && !socket.isClosed()) socket.close();

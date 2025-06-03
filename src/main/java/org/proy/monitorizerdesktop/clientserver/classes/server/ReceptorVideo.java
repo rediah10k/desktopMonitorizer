@@ -41,9 +41,6 @@ public class ReceptorVideo {
         return puerto;
     }
 
-    public GeneradorVideoLocal getGeneradorVideoLocal() {
-        return generadorVideoLocal;
-    }
 
    public void setProperties(){
        cerrar();

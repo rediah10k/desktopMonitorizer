@@ -23,10 +23,6 @@ public class PoolConexiones {
         return maxConexiones;
     }
 
-    public List<Conexion> getDisponibles() {
-        return disponibles;
-    }
-
     public List<Conexion> getOcupadas() {
         return ocupadas;
     }
@@ -79,7 +75,7 @@ public class PoolConexiones {
     }
 
 
-    public synchronized void cerrarTodo() {
+    public void cerrarTodo() {
         for (Conexion c : disponibles) c.cerrarConexion();
         for (Conexion c : ocupadas) c.cerrarConexion();
         disponibles.clear();

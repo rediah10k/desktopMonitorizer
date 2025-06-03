@@ -30,6 +30,7 @@ build/
 !**/src/test/**/build/
 /clientmedia
 /servermedia
+/recibidos
 /src/main/resources/application.properties
 
 ### VS Code ###

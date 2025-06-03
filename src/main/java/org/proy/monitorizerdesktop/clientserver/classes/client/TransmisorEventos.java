@@ -15,7 +15,7 @@ public class TransmisorEventos {
 
     private Socket socket;
     private DataOutputStream dos;
-    public CapturadorEventos capturadorEventos;
+    private CapturadorEventos capturadorEventos;
     public volatile Boolean transmitiendo=false;
 
     public TransmisorEventos() {
@@ -23,12 +23,10 @@ public class TransmisorEventos {
     }
 
 
-
     public void iniciarTransmision() {
         transmitiendo = true;
 
     }
-
 
     public void enviarEvento(String evento) {
         if(transmitiendo){

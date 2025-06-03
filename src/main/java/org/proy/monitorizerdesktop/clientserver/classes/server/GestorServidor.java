@@ -37,16 +37,8 @@ public class GestorServidor {
         this.servidorListener = new ServidorListener(servidorView);
     }
 
-    public ReceptorVideo getReceptor() {
-        return receptorVideo;
-    }
-
     public PoolConexiones getPoolConexiones() {
         return poolConexiones;
-    }
-
-    public List<Conexion> getPoolConexionesDisponibles() {
-        return poolConexiones.getDisponibles();
     }
 
     public List<Conexion> getPoolConexionesOcupadas() {
@@ -114,7 +106,6 @@ public class GestorServidor {
             }
             servidorListener.onTransmision(frame);
         }
-
     }
 
     public void enviarArchivosAClientes(File archivo) {
@@ -124,7 +115,6 @@ public class GestorServidor {
             new Thread(() -> {
                 transmisorArchivos.enviarArchivo(archivo);}).start();
         }
-
     }
 
     public void mostrarEventos(){

@@ -1,5 +1,6 @@
 package org.proy.monitorizerdesktop.clientserver.classes.server;
 
+import lombok.Builder;
 import org.proy.monitorizerdesktop.clientserver.dtos.UsuarioDTO;
 import org.proy.monitorizerdesktop.clientserver.utils.EstatusConexion;
 import org.proy.monitorizerdesktop.entities.Usuario;
@@ -8,19 +9,13 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
+@Builder
 public class Conexion implements Runnable {
 
     private Socket socket;
     private volatile Boolean activo;
     private Long clienteId;
 
-    public void setActivo(Boolean activo) {
-        this.activo = activo;
-    }
-
-    public Socket getSocket() {
-        return socket;
-    }
 
     public void setSocket(Socket socket) {
         this.socket = socket;

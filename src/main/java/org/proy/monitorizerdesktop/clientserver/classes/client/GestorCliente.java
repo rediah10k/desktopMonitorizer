@@ -1,7 +1,6 @@
 package org.proy.monitorizerdesktop.clientserver.classes.client;
 
-import lombok.Getter;
-import lombok.Setter;
+
 import org.proy.monitorizerdesktop.clientserver.dtos.UsuarioDTO;
 import org.proy.monitorizerdesktop.clientserver.utils.EstatusConexion;
 import org.proy.monitorizerdesktop.clientserver.views.ClienteView;
@@ -14,8 +13,6 @@ import java.nio.charset.StandardCharsets;
 
 @Component
 public class GestorCliente {
-    @Getter
-    @Setter
     private Integer puerto;
     private DataInputStream dis;
     private ServerSocket serverSocket;
@@ -24,6 +21,15 @@ public class GestorCliente {
     private TransmisorVideo transmisorVideo;
     private TransmisorEventos transmisorEventos;
     private ReceptorArchivos receptorArchivos;
+
+
+     public Integer getPuerto() {
+         return puerto;
+     }
+
+     public void setPuerto(Integer puerto) {
+         this.puerto = puerto;
+     }
 
     @Autowired
     public GestorCliente(  TransmisorEventos transmisorEventos, TransmisorVideo transmisorVideo, ReceptorArchivos receptorArchivos) {
@@ -58,7 +64,6 @@ public class GestorCliente {
                 byte[] buffer = new byte[longitud];
                 dis.readFully(buffer);
                 String mensaje = new String(buffer, StandardCharsets.UTF_8);
-
                     procesarMensaje(mensaje);
                 Thread.sleep(100);
             }
@@ -82,8 +87,7 @@ public class GestorCliente {
             transmisorEventos.detenerTransmision();
             clienteListener.onConexionAceptada();
         }if(mensaje.equals(EstatusConexion.INICIAR_ARCHIVO.name())) {
-            new Thread(() -> {
-                receptorArchivos.ponerEnEscucha();}).start();
+            new Thread(() -> {receptorArchivos.ponerEnEscucha();}).start();
         }
 
     }
