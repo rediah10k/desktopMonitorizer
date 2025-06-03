@@ -19,7 +19,6 @@ public class InicioView extends JFrame {
     private JLabel mensajeErrorLabel;
     private final InicioController controller;
 
-
     public InicioView(InicioController controller, VistaFactory vistaFactory) {
         this.controller = controller;
         this.vistaFactory = vistaFactory;
@@ -30,29 +29,47 @@ public class InicioView extends JFrame {
     private void buildUI() {
         setTitle("Inicio de Sesión");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 250);
+        setSize(600, 400);
         setLocationRelativeTo(null);
 
         JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEtchedBorder(),
+                "Inicie sesión para comenzar",
+                0, 0, new Font("SansSerif", Font.BOLD, 14)
+        ));
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JLabel emailLabel = new JLabel("Email:");
-        emailField = new JTextField();
+        int row = 0;
+        gbc.gridx = 0; gbc.gridy = row;
+        panel.add(new JLabel("Email:"), gbc);
+        emailField = new JTextField(20);
+        gbc.gridx = 1;
+        panel.add(emailField, gbc);
 
-        JLabel passwordLabel = new JLabel("Contraseña:");
-        passwordField = new JPasswordField();
+        gbc.gridx = 0; gbc.gridy = ++row;
+        panel.add(new JLabel("Contraseña:"), gbc);
+        passwordField = new JPasswordField(20);
+        gbc.gridx = 1;
+        panel.add(passwordField, gbc);
 
-        JLabel rolLabel = new JLabel("Rol:");
+        gbc.gridx = 0; gbc.gridy = ++row;
+        panel.add(new JLabel("Rol:"), gbc);
         rolComboBox = new JComboBox<>(new String[]{"Cliente", "Servidor"});
-        rolComboBox.setSelectedIndex(-1);
+        gbc.gridx = 1;
+        panel.add(rolComboBox, gbc);
 
         mensajeErrorLabel = new JLabel("");
         mensajeErrorLabel.setForeground(Color.RED);
         mensajeErrorLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        gbc.gridx = 0; gbc.gridy = ++row; gbc.gridwidth = 2;
+        panel.add(mensajeErrorLabel, gbc);
 
         iniciarButton = new JButton("Iniciar sesión");
+        iniciarButton.setPreferredSize(new Dimension(150, 30));
         iniciarButton.addActionListener(e -> {
             String email = getEmail();
             String password = getPassword();
@@ -64,29 +81,11 @@ public class InicioView extends JFrame {
             }
         });
 
-        gbc.gridx = 0; gbc.gridy = 0;
-        panel.add(emailLabel, gbc);
-        gbc.gridx = 1;
-        panel.add(emailField, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 1;
-        panel.add(passwordLabel, gbc);
-        gbc.gridx = 1;
-        panel.add(passwordField, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 2;
-        panel.add(rolLabel, gbc);
-        gbc.gridx = 1;
-        panel.add(rolComboBox, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        panel.add(mensajeErrorLabel, gbc);
-
-        gbc.gridx = 1; gbc.gridy = 4;
+        gbc.gridy = ++row;
+        gbc.anchor = GridBagConstraints.CENTER;
         panel.add(iniciarButton, gbc);
 
-        getContentPane().add(panel);
+        add(panel);
         setVisible(true);
     }
 
@@ -120,5 +119,4 @@ public class InicioView extends JFrame {
     public String getRol() {
         return (String) rolComboBox.getSelectedItem();
     }
-
 }

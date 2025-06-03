@@ -12,11 +12,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class ClienteController implements IController {
     private final Cliente cliente;
-    private final UserService userService;
 
     @Autowired
-    public ClienteController(UserService userService, Cliente cliente) {
-        this.userService = userService;
+    public ClienteController(Cliente cliente) {
         this.cliente = cliente;
     }
 
@@ -25,12 +23,10 @@ public class ClienteController implements IController {
 
    }
 
-
     @Override
     public UsuarioDTO getUsuario() {
         return this.cliente.getUsuario();
     }
-
 
     public void suscribirseAListener(ClienteView view) {
         cliente.getGestorCliente().setClienteListener(view);
@@ -47,11 +43,5 @@ public class ClienteController implements IController {
    public void iniciarCliente() {
        this.cliente.iniciarEscucha();
    }
-
-
-
-
-
-
 
 }

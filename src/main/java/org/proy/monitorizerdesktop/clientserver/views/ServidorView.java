@@ -16,20 +16,22 @@ import java.util.List;
 @Component
 public class ServidorView extends JFrame {
     TransmisionView transmisionView;
-    PuertoView puertoView;
     private JTable table;
     private ConexionesActualesTableModel tableModel;
     private JLabel labelEstado;
     private JButton btnNuevaConexion;
     private JButton btnCerrarConexion;
     private JButton btnMonitor;
+<<<<<<< HEAD
     private JButton btnCompartirArchivo;
+=======
+    private JButton btnMaxConexiones;
+>>>>>>> 392907795abe34b8a9a78753e7dc5ea9489653b5
     private ServidorController controller;
 
     @Autowired
-    public ServidorView(ServidorController servidorController, PuertoView puertoView) {
+    public ServidorView(ServidorController servidorController) {
         this.controller = servidorController;
-        this.puertoView = puertoView;
         tableModel = new ConexionesActualesTableModel(List.of());
         table = new JTable(tableModel);
         table.setDefaultEditor(Object.class, null);
@@ -46,27 +48,114 @@ public class ServidorView extends JFrame {
     }
 
     public void inicializarVentana(){
-        this.puertoView.setParentComponents(this,controller);
-        puertoView.pedirPuerto();
         buildUI();
     }
 
     private void buildUI() {
         setTitle("Servidor - Gestión de Conexiones");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+<<<<<<< HEAD
         setSize(800, 400);
-        setLocationRelativeTo(null);
+=======
 
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        JPanel contenedorCentral = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(10, 0, 10, 0);
+
+        JLabel etiquetaPuerto = new JLabel("Ingrese el puerto para escuchar:");
+        etiquetaPuerto.setFont(new Font("Arial", Font.BOLD, 16));
+        gbc.gridy = 0;
+        contenedorCentral.add(etiquetaPuerto, gbc);
+
+        JTextField campoPuerto = new JTextField(10);
+        campoPuerto.setFont(new Font("Arial", Font.PLAIN, 14));
+        campoPuerto.setPreferredSize(new Dimension(200, 30));
+        gbc.gridy = 1;
+        contenedorCentral.add(campoPuerto, gbc);
+
+        JLabel etiquetaMax = new JLabel("Máximo de conexiones permitidas:");
+        etiquetaMax.setFont(new Font("Arial", Font.BOLD, 16));
+        gbc.gridy = 2;
+        contenedorCentral.add(etiquetaMax, gbc);
+
+        JTextField campoMaxConexiones = new JTextField(10);
+        campoMaxConexiones.setFont(new Font("Arial", Font.PLAIN, 14));
+        campoMaxConexiones.setPreferredSize(new Dimension(200, 30));
+        gbc.gridy = 3;
+        contenedorCentral.add(campoMaxConexiones, gbc);
+
+        JButton botonAceptar = new JButton("Aceptar");
+        botonAceptar.setFont(new Font("Arial", Font.PLAIN, 14));
+        gbc.gridy = 4;
+        contenedorCentral.add(botonAceptar, gbc);
+
+        JLabel estadoActual = new JLabel("Esperando ingreso del puerto y conexiones...");
+        estadoActual.setFont(new Font("Arial", Font.PLAIN, 14));
+        JPanel estadoPanel = new JPanel(new BorderLayout());
+        estadoPanel.add(estadoActual, BorderLayout.CENTER);
+
+        panel.add(contenedorCentral, BorderLayout.CENTER);
+        panel.add(estadoPanel, BorderLayout.SOUTH);
+
+        botonAceptar.addActionListener(e -> {
+            String entradaPuerto = campoPuerto.getText().trim();
+            String entradaMax = campoMaxConexiones.getText().trim();
+            try {
+                int puerto = Integer.parseInt(entradaPuerto);
+                int max = Integer.parseInt(entradaMax);
+                if (puerto < 1024 || puerto > 65535) {
+                    throw new NumberFormatException("Puerto fuera de rango");
+                }
+                if (max <= 0 || max > 10) {
+                    throw new NumberFormatException("Conexiones inválidas");
+                }
+
+                controller.setPuerto(puerto);
+                controller.establecerMaximoConexiones(max);
+                construirInterfazPrincipal();
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "El puerto debe estar entre 1024 y 65535.\nEl número de conexiones debe ser entre 1 y 10.",
+                        "Entrada inválida",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        });
+
+
+        setContentPane(panel);
+        setSize(600, 400);
+>>>>>>> 392907795abe34b8a9a78753e7dc5ea9489653b5
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    private void construirInterfazPrincipal() {
         JPanel panelPrincipal = new JPanel(new BorderLayout());
         JPanel panelSuperior = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         btnNuevaConexion = new JButton("Nueva conexión");
+<<<<<<< HEAD
         btnCerrarConexion = new JButton("Cerrar conexion");
         btnMonitor= new JButton("Observar PC");
         btnCompartirArchivo= new JButton("Enviar archivo");
 
+=======
+        btnCerrarConexion = new JButton("Cerrar conexión");
+        btnMonitor = new JButton("Observar PC");
+        btnMaxConexiones = new JButton("Cambiar Max Conexiones");
+>>>>>>> 392907795abe34b8a9a78753e7dc5ea9489653b5
 
         labelEstado = new JLabel("");
+
         panelSuperior.add(btnNuevaConexion);
         panelSuperior.add(btnCerrarConexion);
         panelSuperior.add(btnCompartirArchivo);
@@ -74,29 +163,34 @@ public class ServidorView extends JFrame {
         panelSuperior.add(labelEstado);
 
         JScrollPane scrollPane = new JScrollPane(table);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 392907795abe34b8a9a78753e7dc5ea9489653b5
         panelPrincipal.add(panelSuperior, BorderLayout.NORTH);
         panelPrincipal.add(scrollPane, BorderLayout.CENTER);
 
-        btnNuevaConexion.addActionListener(e -> {
-            mostrarVentanaAgregar();
-        });
-
-        btnCerrarConexion.addActionListener(e -> {
-            mostrarVentanaCerrar();
-        });
-
+        btnNuevaConexion.addActionListener(e -> mostrarVentanaAgregar());
+        btnCerrarConexion.addActionListener(e -> mostrarVentanaCerrar());
         btnMonitor.addActionListener(e -> {
-
             mostrarVentanaMonitor();
             solicitarTransmision();
         });
 
+<<<<<<< HEAD
         btnCompartirArchivo.addActionListener(e -> {
             mostrarVentanaSeleccionArchivo();
         });
 
         add(panelPrincipal);
+=======
+        setContentPane(panelPrincipal);
+        setSize(600, 400);
+        setLocationRelativeTo(null);
+>>>>>>> 392907795abe34b8a9a78753e7dc5ea9489653b5
         actualizarTabla();
+        revalidate();
+        repaint();
     }
 
     public void solicitarTransmision() {
@@ -122,25 +216,26 @@ public class ServidorView extends JFrame {
 
     public void mostrarVentanaAgregar() {
         JFrame frame = new JFrame("Agregar cliente");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(350, 200);
+        frame.setSize(400, 200);
         frame.setLayout(new BorderLayout(10, 10));
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setResizable(false);
 
-        JLabel mensaje = new JLabel("Ingresa la dirección IP local del ordenador y el puerto:");
+        JLabel mensaje = new JLabel("Ingresa la IP y el puerto del cliente:");
         mensaje.setHorizontalAlignment(SwingConstants.CENTER);
+        mensaje.setFont(new Font("Arial", Font.BOLD, 14));
         frame.add(mensaje, BorderLayout.NORTH);
 
-        JPanel centro = new JPanel(new GridLayout(2, 2, 5, 5));
-        JLabel labelIP = new JLabel("Dirección IP:");
-        JTextField campoIP = new JTextField(15);
-        JLabel labelPuerto = new JLabel("Puerto:");
+        JTextField campoIP = new JTextField(12);
         JTextField campoPuerto = new JTextField(5);
 
-        centro.add(labelIP);
+        JPanel centro = new JPanel();
+        centro.add(new JLabel("IP:"));
         centro.add(campoIP);
-        centro.add(labelPuerto);
+        centro.add(new JLabel("Puerto:"));
         centro.add(campoPuerto);
         frame.add(centro, BorderLayout.CENTER);
+<<<<<<< HEAD
         JPanel sur = new JPanel();
         JButton botonConectar = new JButton("Conectar");
         sur.add(botonConectar);
@@ -149,16 +244,25 @@ public class ServidorView extends JFrame {
         botonConectar.addActionListener(e -> {
             String ip = campoIP.getText().trim();
             String puertoStr = campoPuerto.getText().trim();
+=======
+
+        JButton conectar = new JButton("Conectar");
+        conectar.addActionListener(e -> {
+>>>>>>> 392907795abe34b8a9a78753e7dc5ea9489653b5
             try {
-                int puerto = Integer.parseInt(puertoStr);
-                System.out.println("IP: " + ip + ", Puerto: " + puerto);
-                this.controller.agregarCliente(ip, puerto);
+                int puerto = Integer.parseInt(campoPuerto.getText().trim());
+                String ip = campoIP.getText().trim();
+                controller.agregarCliente(ip, puerto);
                 actualizarTabla();
                 frame.dispose();
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(frame, "El puerto debe ser un número entero.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Puerto inválido. Debe ser un número.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
+
+        JPanel sur = new JPanel();
+        sur.add(conectar);
+        frame.add(sur, BorderLayout.SOUTH);
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
@@ -174,28 +278,36 @@ public class ServidorView extends JFrame {
 
     public void mostrarVentanaCerrar() {
         int row = table.getSelectedRow();
-        if(row != -1) {
+        if (row != -1) {
             ConexionDTO clienteConectado = tableModel.getClientes().get(row);
             controller.eliminarCliente(clienteConectado);
 
-            JFrame frame = new JFrame("Cerrar cliente");
+            JFrame frame = new JFrame("Cliente desconectado");
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            frame.setSize(350, 200);
-            frame.setLayout(new BorderLayout(10, 10));
+            frame.setSize(400, 180);
+            frame.setLayout(new BorderLayout(20, 20));
+            frame.setResizable(false);
 
-            JLabel mensaje = new JLabel("La conexion con el cliente ha sido cerrada exitosamente");
+            JLabel mensaje = new JLabel("<html><center>La conexión con el cliente<br>ha sido cerrada exitosamente.</center></html>");
             mensaje.setHorizontalAlignment(SwingConstants.CENTER);
-            frame.add(mensaje, BorderLayout.NORTH);
+            mensaje.setFont(new Font("Arial", Font.PLAIN, 15));
+            frame.add(mensaje, BorderLayout.CENTER);
+
+            JPanel panelBoton = new JPanel();
             JButton botonAceptar = new JButton("Aceptar");
-            botonAceptar.addActionListener(e -> {
-                frame.dispose();
-            });
-            actualizarTabla();
+            botonAceptar.setPreferredSize(new Dimension(100, 30));
+            botonAceptar.setFont(new Font("Arial", Font.PLAIN, 13));
+            panelBoton.add(botonAceptar);
+            frame.add(panelBoton, BorderLayout.SOUTH);
+
+            botonAceptar.addActionListener(e -> frame.dispose());
+
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
+
+            actualizarTabla();
         }
     }
-
 
     public void actualizarCantidad(int actuales, int maximas) {
         labelEstado.setText("Conexiones " + actuales + "/" + maximas);
