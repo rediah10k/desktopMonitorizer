@@ -1,6 +1,7 @@
 package org.proy.monitorizerdesktop.auth.views;
 
 import org.proy.monitorizerdesktop.auth.controllers.InicioController;
+import org.proy.monitorizerdesktop.clientserver.dtos.UsuarioDTO;
 import org.proy.monitorizerdesktop.entities.Usuario;
 import org.springframework.stereotype.Component;
 
@@ -89,20 +90,20 @@ public class InicioView extends JFrame {
         setVisible(true);
     }
 
-    private Usuario iniciarSesion(String email, String password, String rol) {
+    private UsuarioDTO iniciarSesion(String email, String password) {
 
-        Optional<Usuario> usuario = controller.autenticarYObtenerUsuario(email, password);
-        if ( usuario.isPresent()) {
-           return usuario.get();
-        }else{
+        UsuarioDTO usuario = controller.autenticarYObtenerUsuario(email, password);
+        if(usuario == null) {
             mensajeErrorLabel.setText("Email o contraseña incorrectas");
             throw new RuntimeException("Email o contraseña incorrectas");
+        }else{
+            return usuario;
         }
 
     }
 
     private void desplegarVistaRol(String email, String password,String rol) {
-        Usuario usuario = iniciarSesion(email, password, rol);
+        UsuarioDTO usuario = iniciarSesion(email, password);
        JFrame vista = vistaFactory.getVistaPorRol(rol, usuario);
        vista.setVisible(true);
        this.dispose();

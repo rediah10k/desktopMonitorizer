@@ -55,6 +55,7 @@ public class ReceptorEventos {
 
     public void detenerRecepcion(){
         transmitiendo = false;
+
     }
 
     public void cerrar() {
