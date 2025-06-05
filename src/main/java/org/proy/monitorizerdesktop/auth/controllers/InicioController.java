@@ -1,6 +1,7 @@
 package org.proy.monitorizerdesktop.auth.controllers;
 
 import org.proy.monitorizerdesktop.auth.services.AuthService;
+import org.proy.monitorizerdesktop.clientserver.dtos.UsuarioDTO;
 import org.proy.monitorizerdesktop.entities.Usuario;
 import org.springframework.stereotype.Component;
 import org.proy.monitorizerdesktop.clientserver.services.UserService;
@@ -16,11 +17,16 @@ public class InicioController {
         this.userService= userService;
     }
 
-    public Optional<Usuario> autenticarYObtenerUsuario(String email, String password) {
+    public UsuarioDTO autenticarYObtenerUsuario(String email, String password) {
         if (authService.login(email, password)) {
-            return userService.loadUser(email);
+
+            Optional<Usuario> user= userService.loadUser(email);
+            if (user.isPresent()) {
+
+                return new UsuarioDTO(user.get().getEmail(),user.get().getUid());
+            }
         }
-        return Optional.empty();
+       return null;
     }
 
 

@@ -20,8 +20,8 @@ public class VistaFactory {
         this.servidorView = servidorView;
     }
 
-    public JFrame getVistaPorRol(String rol, Usuario usuario) {
-        UsuarioDTO usuarioInfo = new UsuarioDTO(usuario.getEmail(),usuario.getUid());
+    public JFrame getVistaPorRol(String rol, UsuarioDTO usuario) {
+        UsuarioDTO usuarioInfo = new UsuarioDTO(usuario.getEmail(),usuario.getId());
         if ("Cliente".equalsIgnoreCase(rol)) {
             clienteView.setUsuario(usuarioInfo);
             clienteView.inicializarVentana();

@@ -12,7 +12,5 @@ public class MonitorizerDesktopApplication {
         ApplicationContext context = SpringApplication.run(MonitorizerDesktopApplication.class, args);
         InicioView inicioView = context.getBean(InicioView.class);
         inicioView.setVisible(true);
-
-
     }
 }
